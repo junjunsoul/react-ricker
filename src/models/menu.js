@@ -1,15 +1,11 @@
 import memoizeOne from 'memoize-one';
 import isEqual from 'lodash/isEqual';
 import { formatMessage } from 'umi/locale';
-import Authorized from '@/utils/Authorized';
-
-const { check } = Authorized;
-
 // Conversion router to menu.
-function formatter(data, parentAuthority, parentName) {
+function formatter(data, parentName) {
   return data
     .map(item => {
-      if (!item.name || !item.path) {
+      if (!item.name || !item.path || !item.available) {
         return null;
       }
 
@@ -24,14 +20,12 @@ function formatter(data, parentAuthority, parentName) {
         ...item,
         name: formatMessage({ id: locale, defaultMessage: item.name }),
         locale,
-        authority: item.authority || parentAuthority,
       };
-      if (item.routes) {
-        const children = formatter(item.routes, item.authority, locale);
+      if (item.children) {
+        const children = formatter(item.children, locale);
         // Reduce memory usage
         result.children = children;
       }
-      delete result.routes;
       return result;
     })
     .filter(item => item);
@@ -62,7 +56,7 @@ const filterMenuData = menuData => {
   }
   return menuData
     .filter(item => item.name && !item.hideInMenu)
-    .map(item => check(item.authority, getSubMenu(item)))
+    .map(item => getSubMenu(item))
     .filter(item => item);
 };
 /**
@@ -97,8 +91,8 @@ export default {
 
   effects: {
     *getMenuData({ payload }, { put }) {
-      const { routes, authority } = payload;
-      const menuData = filterMenuData(memoizeOneFormatter(routes, authority));
+      const { authMenus } = payload;
+      const menuData = filterMenuData(memoizeOneFormatter(authMenus));
       const breadcrumbNameMap = memoizeOneGetBreadcrumbNameMap(menuData);
       yield put({
         type: 'save',

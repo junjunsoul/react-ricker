@@ -23,12 +23,12 @@ const plugins = [
       dynamicImport: {
         loadingComponent: './components/PageLoading/index',
       },
-      pwa: {
-        workboxPluginMode: 'InjectManifest',
-        workboxOptions: {
-          importWorkboxFrom: 'local',
-        },
-      },
+      // pwa: {
+      //   workboxPluginMode: 'InjectManifest',
+      //   workboxOptions: {
+      //     importWorkboxFrom: 'local',
+      //   },
+      // },
       ...(!process.env.TEST && os.platform() === 'darwin'
         ? {
             dll: {
@@ -44,14 +44,15 @@ const plugins = [
 
 // 针对 preview.pro.ant.design 的 GA 统计代码
 // 业务上不需要这个
-if (process.env.APP_TYPE === 'site') {
-  plugins.push([
-    'umi-plugin-ga',
-    {
-      code: 'UA-72788897-6',
-    },
-  ]);
-}
+
+// if (process.env.APP_TYPE === 'site') {
+//   plugins.push([
+//     'umi-plugin-ga',
+//     {
+//       code: 'UA-72788897-6',
+//     },
+//   ]);
+// }
 
 export default {
   // add for transfer to umi

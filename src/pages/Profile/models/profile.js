@@ -12,14 +12,14 @@ export default {
 
   effects: {
     *fetchBasic(_, { call, put }) {
-      const response = yield call(queryBasicProfile);
+      const response = yield call(queryBasicProfile.req);
       yield put({
         type: 'show',
         payload: response,
       });
     },
     *fetchAdvanced(_, { call, put }) {
-      const response = yield call(queryAdvancedProfile);
+      const response = yield call(queryAdvancedProfile.req);
       yield put({
         type: 'show',
         payload: response,

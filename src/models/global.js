@@ -5,6 +5,7 @@ export default {
 
   state: {
     collapsed: false,
+    isMobile: false,
     notices: [],
   },
 
@@ -72,6 +73,12 @@ export default {
       return {
         ...state,
         collapsed: payload,
+      };
+    },
+    changeMedia(state, { payload }) {
+      return {
+        ...state,
+        isMobile: payload,
       };
     },
     saveNotices(state, { payload }) {

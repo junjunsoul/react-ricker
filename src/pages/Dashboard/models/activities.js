@@ -9,7 +9,7 @@ export default {
 
   effects: {
     *fetchList(_, { call, put }) {
-      const response = yield call(queryActivities);
+      const response = yield call(queryActivities.req);
       yield put({
         type: 'saveList',
         payload: Array.isArray(response) ? response : [],

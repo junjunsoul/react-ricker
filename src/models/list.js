@@ -9,14 +9,14 @@ export default {
 
   effects: {
     *fetch({ payload }, { call, put }) {
-      const response = yield call(queryFakeList, payload);
+      const response = yield call(queryFakeList.req, payload);
       yield put({
         type: 'queryList',
         payload: Array.isArray(response) ? response : [],
       });
     },
     *appendFetch({ payload }, { call, put }) {
-      const response = yield call(queryFakeList, payload);
+      const response = yield call(queryFakeList.req, payload);
       yield put({
         type: 'appendList',
         payload: Array.isArray(response) ? response : [],
@@ -25,9 +25,9 @@ export default {
     *submit({ payload }, { call, put }) {
       let callback;
       if (payload.id) {
-        callback = Object.keys(payload).length === 1 ? removeFakeList : updateFakeList;
+        callback = Object.keys(payload).length === 1 ? removeFakeList.req : updateFakeList.req;
       } else {
-        callback = addFakeList;
+        callback = addFakeList.req;
       }
       const response = yield call(callback, payload); // post
       yield put({

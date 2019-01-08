@@ -135,4 +135,15 @@ export default {
       path: '/base/category/list',
     });
   },
+  'POST /api/getMenu': (req, res) => {
+    res.send({ 
+      code: 0, 
+      data: [
+        '/api/getMenu',
+        '/api/test/add',
+        '/api/test/list',
+        '/api/fake_chart_data'
+      ] 
+    });
+  }
 };

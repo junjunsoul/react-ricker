@@ -10,12 +10,26 @@ export default [
       { path: '/user/register-result', component: './User/RegisterResult' },
     ],
   },
+  //mobil
+  {
+    path: '/mobil',
+    component: '../layouts/BasicLayout',
+    routes: [
+      {
+        authChip: ['test_list', 'test_add', 'test_edit', 'test_filter'],
+        miniDepend: ['test_list'],
+        isMobile: true,
+        path: '/mobil/test',
+        name: 'test',
+        component: './Mobil/test'
+      },
+    ],
+  },
   // app
   {
     path: '/',
     component: '../layouts/BasicLayout',
-    Routes: ['src/pages/Authorized'],
-    authority: ['admin', 'user'],
+    authChip: ['test_list', 'test_add', 'test_edit'],
     routes: [
       // dashboard
       { path: '/', redirect: '/dashboard/analysis' },
@@ -27,11 +41,14 @@ export default [
           {
             path: '/dashboard/analysis',
             name: 'analysis',
+            authChip: ['analysis_charts'],
+            miniDepend: ['analysis_charts'],
             component: './Dashboard/Analysis',
           },
           {
             path: '/dashboard/monitor',
             name: 'monitor',
+            authChip:['monitor_tag'],
             component: './Dashboard/Monitor',
           },
           {
@@ -82,7 +99,6 @@ export default [
           {
             path: '/form/advanced-form',
             name: 'advancedform',
-            authority: ['admin'],
             component: './Forms/AdvancedForm',
           },
         ],
@@ -150,7 +166,6 @@ export default [
           {
             path: '/profile/advanced',
             name: 'advanced',
-            authority: ['admin'],
             component: './Profile/AdvancedProfile',
           },
         ],

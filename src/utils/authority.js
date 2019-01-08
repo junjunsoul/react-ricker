@@ -1,22 +1,16 @@
-// use localStorage to store the authority info, which might be sent from server in actual project.
-export function getAuthority(str) {
-  // return localStorage.getItem('antd-pro-authority') || ['admin', 'user'];
-  const authorityString =
-    typeof str === 'undefined' ? localStorage.getItem('antd-pro-authority') : str;
-  // authorityString could be admin, "admin", ["admin"]
-  let authority;
-  try {
-    authority = JSON.parse(authorityString);
-  } catch (e) {
-    authority = authorityString;
-  }
-  if (typeof authority === 'string') {
-    return [authority];
-  }
-  return authority || ['admin'];
-}
-
-export function setAuthority(authority) {
-  const proAuthority = typeof authority === 'string' ? [authority] : authority;
-  return localStorage.setItem('antd-pro-authority', JSON.stringify(proAuthority));
+import pathToRegexp from 'path-to-regexp';
+export function getRouterAuthority(pathname, routeData, chil) {
+  let routeAuthority = null;
+  const getAuthority = (key, routes) => {
+    routes.map(route => {
+      if (route.path && pathToRegexp(route.path).test(key)) {
+        routeAuthority = route;
+      } else if (route[chil]) {
+        routeAuthority = getAuthority(key, route[chil]);
+      }
+      return route;
+    });
+    return routeAuthority;
+  };
+  return getAuthority(pathname, routeData);
 }

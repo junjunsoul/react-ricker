@@ -8,7 +8,6 @@
     "start:no-mock": "cross-env MOCK=none umi dev",
     "build": "umi build",
     "prettier": "node ./scripts/prettier.js",
-    "lint-staged": "lint-staged",
     "analyze": "cross-env ANALYZE=1 umi build",
     "docker:dev": "docker-compose -f ./docker/docker-compose.dev.yml up",
     "docker:build": "docker-compose -f ./docker/docker-compose.dev.yml build",
@@ -16,11 +15,13 @@
     "docker-prod:build": "docker-compose -f ./docker/docker-compose.yml build"
   },
   "dependencies": {
+    "@antv/data-set": "^0.10.0",
     "@babel/runtime": "^7.1.5",
+    "@zouxin/ua-parser": "^1.2.2",
     "antd": "^3.10.9",
+    "antd-mobile": "^2.2.6",
     "bizcharts": "^3.4.0",
     "bizcharts-plugin-slider": "^2.1.1-beta.1",
-    "@antv/data-set": "^0.10.0",
     "classnames": "^2.2.6",
     "dva": "^2.4.0",
     "enquire-js": "^0.2.1",
@@ -36,6 +37,7 @@
     "prop-types": "^15.5.10",
     "qs": "^6.6.0",
     "rc-animate": "^2.4.4",
+    "rc-form": "^2.4.0",
     "react": "^16.6.3",
     "react-container-query": "^0.11.0",
     "react-copy-to-clipboard": "^5.0.1",
@@ -80,14 +82,6 @@
     "umi-plugin-ga": "^1.1.3",
     "umi-plugin-react": "^1.2.0"
   },
-  "lint-staged": {
-    "**/*.{js,ts,tsx,json,jsx,less}": [
-      "node ./scripts/lint-prettier.js",
-      "git add"
-    ],
-    "**/*.{js,jsx}": "npm run lint-staged:js",
-    "**/*.less": "stylelint --syntax less"
-  },
   "engines": {
     "node": ">=8.0.0"
   },
@@ -95,10 +89,5 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 10"
-  ],
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint-staged"
-    }
-  }
+  ]
 }

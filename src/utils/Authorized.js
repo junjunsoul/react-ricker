@@ -1,12 +1,12 @@
-import RenderAuthorized from '@/components/Authorized';
-import { getAuthority } from './authority';
+import { getRouterAuthority } from './authority';
 
-let Authorized = RenderAuthorized(getAuthority()); // eslint-disable-line
-
-// Reload the rights component
-const reloadAuthorized = () => {
-  Authorized = RenderAuthorized(getAuthority());
-};
-
-export { reloadAuthorized };
-export default Authorized;
+export default function Authorized({ pathname, routes, authMenus, children, noMatch }) {
+  let route = getRouterAuthority(pathname, routes, 'routes');
+  let auth = getRouterAuthority(pathname, authMenus, 'children');
+  if (route && auth) {
+    route.authorized = Object.assign({}, auth.authChip);
+    return auth.available ? children : noMatch;
+  } else {
+    return noMatch;
+  }
+}

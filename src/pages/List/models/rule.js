@@ -12,14 +12,14 @@ export default {
 
   effects: {
     *fetch({ payload }, { call, put }) {
-      const response = yield call(queryRule, payload);
+      const response = yield call(queryRule.req, payload);
       yield put({
         type: 'save',
         payload: response,
       });
     },
     *add({ payload, callback }, { call, put }) {
-      const response = yield call(addRule, payload);
+      const response = yield call(addRule.req, payload);
       yield put({
         type: 'save',
         payload: response,
@@ -27,7 +27,7 @@ export default {
       if (callback) callback();
     },
     *remove({ payload, callback }, { call, put }) {
-      const response = yield call(removeRule, payload);
+      const response = yield call(removeRule.req, payload);
       yield put({
         type: 'save',
         payload: response,
@@ -35,7 +35,7 @@ export default {
       if (callback) callback();
     },
     *update({ payload, callback }, { call, put }) {
-      const response = yield call(updateRule, payload);
+      const response = yield call(updateRule.req, payload);
       yield put({
         type: 'save',
         payload: response,
