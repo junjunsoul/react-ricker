@@ -124,7 +124,6 @@ class HeaderView extends PureComponent {
         {isTop && !isMobile ? (
           <TopNavHeader
             theme={navTheme}
-            mode="horizontal"
             onCollapse={handleMenuCollapse}
             onNoticeClear={this.handleNoticeClear}
             onMenuClick={this.handleMenuClick}

@@ -9,7 +9,7 @@ export default {
 
   effects: {
     *submit({ payload }, { call, put }) {
-      const response = yield call(fakeRegister, payload);
+      const response = yield call(fakeRegister.req, payload);
       yield put({
         type: 'registerHandle',
         payload: response,

@@ -12,7 +12,7 @@ export default {
 
   effects: {
     *login({ payload }, { call, put }) {
-      const response = yield call(fakeAccountLogin, payload);
+      const response = yield call(fakeAccountLogin.req, payload);
       yield put({
         type: 'changeLoginStatus',
         payload: response,
@@ -39,7 +39,7 @@ export default {
     },
 
     *getCaptcha({ payload }, { call }) {
-      yield call(getFakeCaptcha, payload);
+      yield call(getFakeCaptcha.req, payload);
     },
 
     *logout(_, { put }) {

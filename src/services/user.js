@@ -8,7 +8,7 @@ export const query = {
   },
 };
 export const queryCurrent = {
-  title: '当前用户信息',
+  title: '用户信息',
   url: '/api/currentUser',
   inborn: true,
   req: async () => {

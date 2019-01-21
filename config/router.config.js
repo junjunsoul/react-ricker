@@ -1,3 +1,4 @@
+//最多显示三级菜单
 export default [
   // user
   {
@@ -123,7 +124,7 @@ export default [
             path: '/list/card-list',
             name: 'cardlist',
             component: './List/CardList',
-          },
+          }, 
           {
             path: '/list/search',
             name: 'searchlist',
@@ -150,68 +151,73 @@ export default [
               },
             ],
           },
+          {
+            path: '/profile',
+            name: 'profile',
+            routes: [
+              // profile
+              {
+                path: '/profile/basic',
+                name: 'basic',
+                component: './Profile/BasicProfile',
+              },
+              {
+                path: '/profile/advanced',
+                name: 'advanced',
+                component: './Profile/AdvancedProfile',
+              },
+            ],
+          },          
         ],
       },
       {
-        path: '/profile',
-        name: 'profile',
-        icon: 'profile',
-        routes: [
-          // profile
+        path: '/other',
+        name: 'other',
+        routes:[
           {
-            path: '/profile/basic',
-            name: 'basic',
-            component: './Profile/BasicProfile',
+            name: 'result',
+            icon: 'check-circle-o',
+            path: '/result',
+            routes: [
+              // result
+              {
+                path: '/result/success',
+                name: 'success',
+                component: './Result/Success',
+              },
+              { path: '/result/fail', name: 'fail', component: './Result/Error' },
+            ],
           },
           {
-            path: '/profile/advanced',
-            name: 'advanced',
-            component: './Profile/AdvancedProfile',
-          },
-        ],
-      },
-      {
-        name: 'result',
-        icon: 'check-circle-o',
-        path: '/result',
-        routes: [
-          // result
-          {
-            path: '/result/success',
-            name: 'success',
-            component: './Result/Success',
-          },
-          { path: '/result/fail', name: 'fail', component: './Result/Error' },
-        ],
-      },
-      {
-        name: 'exception',
-        icon: 'warning',
-        path: '/exception',
-        routes: [
-          // exception
-          {
-            path: '/exception/403',
-            name: 'not-permission',
-            component: './Exception/403',
-          },
-          {
-            path: '/exception/404',
-            name: 'not-find',
-            component: './Exception/404',
-          },
-          {
-            path: '/exception/500',
-            name: 'server-error',
-            component: './Exception/500',
-          },
-          {
-            path: '/exception/trigger',
-            name: 'trigger',
-            hideInMenu: true,
-            component: './Exception/TriggerException',
-          },
-        ],
+            name: 'exception',
+            icon: 'warning',
+            path: '/exception',
+            routes: [
+              // exception
+              {
+                path: '/exception/403',
+                name: 'not-permission',
+                component: './Exception/403',
+              },
+              {
+                path: '/exception/404',
+                name: 'not-find',
+                component: './Exception/404',
+              },
+              {
+                path: '/exception/500',
+                name: 'server-error',
+                component: './Exception/500',
+              },
+              {
+                path: '/exception/trigger',
+                name: 'trigger',
+                hideInMenu: true,
+                component: './Exception/TriggerException',
+              },
+            ],
+          },          
+        ]
       },
       {
         name: 'account',

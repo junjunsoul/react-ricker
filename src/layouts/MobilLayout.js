@@ -4,8 +4,6 @@ import { Layout } from 'antd';
 import DocumentTitle from 'react-document-title';
 import isEqual from 'lodash/isEqual';
 import memoizeOne from 'memoize-one';
-import { ContainerQuery } from 'react-container-query';
-import classNames from 'classnames';
 import pathToRegexp from 'path-to-regexp';
 import Authorized from '@/utils/Authorized';
 import Exception403 from '../pages/Exception/403';
@@ -14,33 +12,10 @@ import Footer from './Footer';
 import { LocaleProvider } from 'antd-mobile';
 import { formatMessage } from 'umi/locale';
 import styles from './MobilLayout.less';
-
+import MobilMenu from '@/components/SiderMenu/MobilMenu';
+import FastClick from 'fastclick';
 const { Content } = Layout;
 
-const query = {
-  'screen-xs': {
-    maxWidth: 575,
-  },
-  'screen-sm': {
-    minWidth: 576,
-    maxWidth: 767,
-  },
-  'screen-md': {
-    minWidth: 768,
-    maxWidth: 991,
-  },
-  'screen-lg': {
-    minWidth: 992,
-    maxWidth: 1199,
-  },
-  'screen-xl': {
-    minWidth: 1200,
-    maxWidth: 1599,
-  },
-  'screen-xxl': {
-    minWidth: 1600,
-  },
-};
 @connect(({ menu, user }) => ({
   authMenus: user.authMenus,
   menuData: menu.menuData,
@@ -51,6 +26,7 @@ class MobilLayout extends React.PureComponent {
     super(props);
     this.getPageTitle = memoizeOne(this.getPageTitle);
     this.matchParamsPath = memoizeOne(this.matchParamsPath, isEqual);
+    FastClick.attach(document.body);
   }
   componentDidMount() {
     const { dispatch, authMenus } = this.props;
@@ -92,7 +68,6 @@ class MobilLayout extends React.PureComponent {
       children,
       location: { pathname },
       authMenus,
-      menuData,
       breadcrumbNameMap,
       route: { routes },
     } = this.props;
@@ -100,32 +75,29 @@ class MobilLayout extends React.PureComponent {
       <Layout
         style={{
           minHeight: '100vh',
+          overflow: 'hidden',
         }}
       >
-        <Content className={styles.content}>
-          <Authorized
-            pathname={pathname}
-            routes={routes}
-            authMenus={authMenus}
-            children={children}
-            noMatch={<Exception403 />}
-          />
-        </Content>
-        <Footer />
+        <MobilMenu {...this.props}>
+          <Content className={styles.content}>
+            <Authorized
+              pathname={pathname}
+              routes={routes}
+              authMenus={authMenus}
+              children={children}
+              noMatch={<Exception403 />}
+            />
+          </Content>
+          <Footer />
+        </MobilMenu>
       </Layout>
     );
     return (
       <React.Fragment>
         <DocumentTitle title={this.getPageTitle(pathname, breadcrumbNameMap)}>
-          <ContainerQuery query={query}>
-            {params => (
-              <Context.Provider value={this.getContext()}>
-                <LocaleProvider>
-                  <div className={classNames(params)}>{layout}</div>
-                </LocaleProvider>
-              </Context.Provider>
-            )}
-          </ContainerQuery>
+          <Context.Provider value={this.getContext()}>
+            <LocaleProvider>{layout}</LocaleProvider>
+          </Context.Provider>
         </DocumentTitle>
       </React.Fragment>
     );

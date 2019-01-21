@@ -4,8 +4,6 @@ import { Layout } from 'antd';
 import DocumentTitle from 'react-document-title';
 import isEqual from 'lodash/isEqual';
 import memoizeOne from 'memoize-one';
-import { ContainerQuery } from 'react-container-query';
-import classNames from 'classnames';
 import pathToRegexp from 'path-to-regexp';
 import { formatMessage } from 'umi/locale';
 import { handleChipforRoute } from '@/authorize/authChip';
@@ -24,31 +22,6 @@ const SettingDrawer = React.lazy(() => import('@/components/SettingDrawer'));
 
 const { Content } = Layout;
 
-const query = {
-  'screen-xs': {
-    maxWidth: 575,
-  },
-  'screen-sm': {
-    minWidth: 576,
-    maxWidth: 767,
-  },
-  'screen-md': {
-    minWidth: 768,
-    maxWidth: 991,
-  },
-  'screen-lg': {
-    minWidth: 992,
-    maxWidth: 1199,
-  },
-  'screen-xl': {
-    minWidth: 1200,
-    maxWidth: 1599,
-  },
-  'screen-xxl': {
-    minWidth: 1600,
-  },
-};
-
 @connect(({ global, setting, menu, user }) => ({
   collapsed: global.collapsed,
   layout: setting.layout,
@@ -63,6 +36,9 @@ class PcLayout extends React.PureComponent {
     super(props);
     this.getPageTitle = memoizeOne(this.getPageTitle);
     this.matchParamsPath = memoizeOne(this.matchParamsPath, isEqual);
+    document.querySelector('html,body,#root').style.overflow = 'auto';
+    document.querySelector('body').style.overflow = 'auto';
+    document.querySelector('#root').style.overflow = 'auto';
   }
 
   componentDidMount() {
@@ -155,6 +131,7 @@ class PcLayout extends React.PureComponent {
       fixedHeader,
     } = this.props;
     const isTop = PropsLayout === 'topmenu';
+
     const contentStyle = !fixedHeader ? { paddingTop: 0 } : {};
     const layout = (
       <Layout>
@@ -197,13 +174,7 @@ class PcLayout extends React.PureComponent {
     return (
       <React.Fragment>
         <DocumentTitle title={this.getPageTitle(pathname, breadcrumbNameMap)}>
-          <ContainerQuery query={query}>
-            {params => (
-              <Context.Provider value={this.getContext()}>
-                <div className={classNames(params)}>{layout}</div>
-              </Context.Provider>
-            )}
-          </ContainerQuery>
+          <Context.Provider value={this.getContext()}>{layout}</Context.Provider>
         </DocumentTitle>
         <Suspense fallback={<PageLoading />}>{this.renderSettingDrawer()}</Suspense>
       </React.Fragment>

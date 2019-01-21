@@ -62,10 +62,13 @@ const tableData = [
 }))
 @Form.create()
 class AdvancedForm extends PureComponent {
-  state = {
-    width: '100%',
-  };
-
+  constructor(props) {
+    super(props);
+    this.state = {
+      width: '100%',
+    };
+    this.myRef = React.createRef();
+  }
   componentDidMount() {
     window.addEventListener('resize', this.resizeFooterToolbar, { passive: true });
   }
@@ -307,7 +310,7 @@ class AdvancedForm extends PureComponent {
         <Card title="成员管理" bordered={false}>
           {getFieldDecorator('members', {
             initialValue: tableData,
-          })(<TableForm />)}
+          })(<TableForm ref={this.myRef} />)}
         </Card>
         <FooterToolbar style={{ width }}>
           {this.getErrorInfo()}

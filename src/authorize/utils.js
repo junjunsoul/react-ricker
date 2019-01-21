@@ -6,12 +6,6 @@ import { handleChip } from './authChip';
 function formatter(data) {
   return data
     .map(item => {
-      if (!item.redirect) {
-        if (!item.name || !item.path) {
-          return null;
-        }
-      }
-
       const result = {
         ...item,
       };

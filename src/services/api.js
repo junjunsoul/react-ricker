@@ -95,7 +95,7 @@ export const queryTags = {
 };
 
 export const queryBasicProfile = {
-  title: '',
+  title: '退货商品',
   url: '/api/profile/basic',
   req: async () => {
     return request('/api/profile/basic');
@@ -103,7 +103,7 @@ export const queryBasicProfile = {
 };
 
 export const queryAdvancedProfile = {
-  title: '',
+  title: '退货进度',
   url: '/api/profile/advanced',
   req: async () => {
     return request('/api/profile/advanced');
@@ -132,6 +132,7 @@ export const removeFakeList = {
     });
   },
 };
+
 export const addFakeList = {
   title: '新增任务',
   url: '/api/fake_list',
@@ -162,24 +163,44 @@ export const updateFakeList = {
   },
 };
 
-export async function fakeAccountLogin(params) {
-  return request('/api/login/account', {
-    method: 'POST',
-    body: params,
-  });
-}
+export const fakeAccountLogin = {
+  title: '登陆',
+  url: '/api/login/account',
+  inborn: true,
+  req: params => {
+    return request('/api/login/account', {
+      method: 'POST',
+      body: params,
+    });
+  },
+};
 
-export async function fakeRegister(params) {
-  return request('/api/register', {
-    method: 'POST',
-    body: params,
-  });
-}
+export const fakeRegister = {
+  title: '注册',
+  url: '/api/register',
+  inborn: true,
+  req: params => {
+    return request('/api/register', {
+      method: 'POST',
+      body: params,
+    });
+  },
+};
 
-export async function queryNotices() {
-  return request('/api/notices');
-}
+export const queryNotices = {
+  title: '通知',
+  url: '/api/notices',
+  inborn: true,
+  req: () => {
+    return request('/api/notices');
+  },
+};
 
-export async function getFakeCaptcha(mobile) {
-  return request(`/api/captcha?mobile=${mobile}`);
-}
+export const getFakeCaptcha = {
+  title: '手机验证登录',
+  url: '/api/captcha',
+  inborn: true,
+  req: mobile => {
+    return request(`/api/captcha?mobile=${mobile}`);
+  },
+};

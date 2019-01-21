@@ -6,6 +6,7 @@ export const add = {
   url: '/api/test/add',
   req: params => request(`${add.url}?${stringify(params)}`),
 };
+
 export const edit = {
   title: '编辑',
   url: '/api/test/edit',
@@ -17,6 +18,7 @@ export const list = {
   url: '/api/test/list',
   req: params => request(`${list.url}?${stringify(params)}`),
 };
+
 export const passwordEdit = {
   title: '修改密码',
   inborn: true, //不需权限控制
@@ -27,6 +29,7 @@ export const passwordEdit = {
       body: params,
     }),
 };
+
 export const getMenuData = {
   title: '获取用户菜单',
   inborn: true,
