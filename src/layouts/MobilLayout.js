@@ -14,6 +14,7 @@ import { formatMessage } from 'umi/locale';
 import styles from './MobilLayout.less';
 import MobilMenu from '@/components/SiderMenu/MobilMenu';
 import FastClick from 'fastclick';
+import logo from '../assets/logo.svg';
 const { Content } = Layout;
 
 @connect(({ menu, user }) => ({
@@ -60,7 +61,7 @@ class MobilLayout extends React.PureComponent {
       defaultMessage: currRouterData.name,
     });
 
-    return `${pageName} - Ant Design Pro`;
+    return `${pageName}`;
   };
 
   render() {
@@ -71,6 +72,7 @@ class MobilLayout extends React.PureComponent {
       breadcrumbNameMap,
       route: { routes },
     } = this.props;
+    const title = this.getPageTitle(pathname, breadcrumbNameMap);
     const layout = (
       <Layout
         style={{
@@ -78,7 +80,7 @@ class MobilLayout extends React.PureComponent {
           overflow: 'hidden',
         }}
       >
-        <MobilMenu {...this.props}>
+        <MobilMenu title={title} logo={logo} {...this.props}>
           <Content className={styles.content}>
             <Authorized
               pathname={pathname}
@@ -94,7 +96,7 @@ class MobilLayout extends React.PureComponent {
     );
     return (
       <React.Fragment>
-        <DocumentTitle title={this.getPageTitle(pathname, breadcrumbNameMap)}>
+        <DocumentTitle title="Ant Design Pro">
           <Context.Provider value={this.getContext()}>
             <LocaleProvider>{layout}</LocaleProvider>
           </Context.Provider>

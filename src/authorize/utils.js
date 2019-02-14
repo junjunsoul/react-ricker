@@ -1,6 +1,6 @@
 import memoizeOne from 'memoize-one';
 import { isEqual } from 'lodash';
-import { handleChip } from './authChip';
+import { handleChip } from './index';
 
 // Conversion router to menu.
 function formatter(data) {

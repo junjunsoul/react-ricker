@@ -142,8 +142,57 @@ export default {
         '/api/getMenu',
         '/api/test/add',
         '/api/test/list',
-        '/api/fake_chart_data'
+        '/api/fake_chart_data',
+        '/api/getRole',
+        '/api/roleList',
       ] 
     });
-  }
+  },
+  'POST /api/roleList': (req,res) => {
+    res.send({ 
+      code: 0, 
+      data: [
+        {
+          role_id:'001',
+          role_name:'超管',
+          create:'管理员',
+          create_time:'2019-02-13 17:40',
+          
+        },
+        {
+          role_id:'002',
+          role_name:'超管2',
+          create:'管理员',
+          create_time:'2019-02-13 17:43',
+          
+        },
+        {
+          role_id:'003',
+          role_name:'超管3',
+          create:'管理员',
+          create_time:'2019-02-13 17:42',
+          
+        },
+      ] 
+    });
+  },
+  'POST /api/getRole': (req,res) => {
+    res.send({ 
+      code: 0, 
+      data:{
+          role_id:'001',
+          role_name:'超管',
+          create:'管理员',
+          create_time:'2019-02-13 17:47',
+          interface:[
+            '/api/getMenu',
+            '/api/test/add',
+            '/api/test/list',
+            '/api/fake_chart_data',
+            '/api/getRole',
+            '/api/roleList',
+          ] 
+        }
+    });
+  },
 };

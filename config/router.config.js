@@ -1,4 +1,8 @@
-//最多显示三级菜单
+// authChip 权限碎片
+// miniDepend 最小权限依赖
+// hideChildrenInMenu 用于隐藏不需要在菜单中展示的子路由。用法可以查看 分步表单 的配置。
+// hideInMenu 可以在菜单中不展示这个路由，包括子路由。效果可以查看 exception/trigger页面。
+// 最多显示三级菜单
 export default [
   // user
   {
@@ -17,8 +21,8 @@ export default [
     component: '../layouts/BasicLayout',
     routes: [
       {
-        authChip: ['test_list', 'test_add', 'test_edit', 'test_filter'],
-        miniDepend: ['test_list'],
+        authChip: ['system.test_list', 'system.test_add'],
+        miniDepend: ['system.test_list'],
         isMobile: true,
         path: '/mobil/test',
         name: 'test',
@@ -30,26 +34,25 @@ export default [
   {
     path: '/',
     component: '../layouts/BasicLayout',
-    authChip: ['test_list', 'test_add', 'test_edit'],
+    // authChip: ['system.test_list', 'system.test_add'],
     routes: [
       // dashboard
       { path: '/', redirect: '/dashboard/analysis' },
       {
         path: '/dashboard',
         name: 'dashboard',
-        icon: 'dashboard',
         routes: [
           {
             path: '/dashboard/analysis',
             name: 'analysis',
-            authChip: ['analysis_charts'],
-            miniDepend: ['analysis_charts'],
+            authChip: ['system.analysis_charts'],
+            miniDepend: ['system.analysis_charts'],
             component: './Dashboard/Analysis',
           },
           {
             path: '/dashboard/monitor',
             name: 'monitor',
-            authChip:['monitor_tag'],
+            authChip:['system.monitor_tag'],
             component: './Dashboard/Monitor',
           },
           {
@@ -62,7 +65,6 @@ export default [
       // forms
       {
         path: '/form',
-        icon: 'form',
         name: 'form',
         routes: [
           {
@@ -107,7 +109,6 @@ export default [
       // list
       {
         path: '/list',
-        icon: 'table',
         name: 'list',
         routes: [
           {
@@ -170,13 +171,13 @@ export default [
           },          
         ],
       },
+      // other
       {
         path: '/other',
         name: 'other',
         routes:[
           {
             name: 'result',
-            icon: 'check-circle-o',
             path: '/result',
             routes: [
               // result
@@ -190,7 +191,6 @@ export default [
           },
           {
             name: 'exception',
-            icon: 'warning',
             path: '/exception',
             routes: [
               // exception
@@ -219,10 +219,11 @@ export default [
           },          
         ]
       },
+      // account
       {
         name: 'account',
-        icon: 'user',
         path: '/account',
+        hideInMenu : true,
         routes: [
           {
             path: '/account/center',
@@ -276,6 +277,26 @@ export default [
           },
         ],
       },
+      //system
+      {
+        name: 'system',
+        path: '/system',
+        routes:[
+          {
+            path: '/system/role',
+            name: 'role',
+            authChip:['system.role_auth'],
+            miniDepend:['system.role_auth'],
+            component: './System/role',
+          },
+          {
+            path: 'system/interface',
+            name: 'interface',
+            component: './System/interface'
+          }
+        ]
+      },
+      // 404
       {
         component: '404',
       },

@@ -36,5 +36,8 @@ export default {
   'menu.account.settings': '个人设置',
   'menu.account.trigger': '触发报错',
   'menu.account.logout': '退出登录',
+  'menu.system': '系统管理',
+  'menu.system.role': '角色设置',
+  'menu.system.interface': '接口清单',
   'menu.test': '测试页',
 };

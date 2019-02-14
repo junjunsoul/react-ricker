@@ -3,8 +3,13 @@ import { isEmpty } from 'lodash';
 import router from 'umi/router';
 import BreadcrumbView from '../PageHeader/breadcrumb';
 import { urlToList } from '../_utils/pathTools';
-import { Drawer, List, NavBar, Icon, Button } from 'antd-mobile';
+import { Icon } from 'antd';
+import { Drawer, List, NavBar, Button } from 'antd-mobile';
 import styles from './index.less';
+
+const IconFont = Icon.createFromIconfontCN({
+  scriptUrl: '//at.alicdn.com/t/font_777628_m6f40vjx6ra.js',
+});
 export default class MobilMenu extends PureComponent {
   constructor(props) {
     super(props);
@@ -189,18 +194,19 @@ export default class MobilMenu extends PureComponent {
     });
   };
   render() {
-    const { children, menuData } = this.props;
+    const { children, menuData, logo, title } = this.props;
     const sidebar = <div className={styles['mobil-menu']}>{this.getNavMenuItems(menuData)}</div>;
     return (
       <div className={styles['mobil-layout']}>
         <NavBar
           mode="dark"
           className={styles['mobil-nav']}
-          icon={<Icon type="left" />}
-          onLeftClick={() => router.goBack()}
-          rightContent={[<Icon key="1" type="ellipsis" onClick={this.onOpenChange} />]}
+          leftContent={[<img src={logo} alt="logo" width="32" />]}
+          rightContent={[
+            <IconFont type="icon-menu" style={{ fontSize: '23px' }} onClick={this.onOpenChange} />,
+          ]}
         >
-          <div className={styles['title']}>{<BreadcrumbView {...this.props} />}</div>
+          <div className={styles['title']}>{title}</div>
         </NavBar>
         <Drawer
           className={styles['menu-drawer']}

@@ -11,7 +11,5 @@ export const queryCurrent = {
   title: '用户信息',
   url: '/api/currentUser',
   inborn: true,
-  req: async () => {
-    return request('/api/currentUser');
-  },
+  req: async () => request(`${queryCurrent.url}`),
 };

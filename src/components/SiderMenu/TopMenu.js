@@ -115,6 +115,7 @@ export default class TopMenu extends PureComponent {
       }
       return node;
     }
+    //获取路由节点
     switch (level) {
       case 1:
         node = (
