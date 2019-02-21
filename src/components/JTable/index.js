@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
-import ReactDOM from 'react-dom';
 import classNames from 'classnames/bind';
 import styles from './index.less';
+import moment from 'moment';
 import 'ag-grid-enterprise';
 import { AgGridReact } from 'ag-grid-react';
-import { Row, Col, Card, Icon, Input } from 'antd';
+import { Row, Col, Card, Icon, Input, Button } from 'antd';
 const Search = Input.Search;
 class JTable extends PureComponent {
   constructor(props) {
@@ -17,6 +17,7 @@ class JTable extends PureComponent {
         enableRowGroup: true,
         enablePivot: false,
         sortable: true,
+        resizable: true,
         filter: true,
         // icons: {
         //     sortAscending: '<i class="fa fa-sort-alpha-asc"/>',
@@ -61,6 +62,12 @@ class JTable extends PureComponent {
     };
     this.tableRef = React.createRef();
   }
+  onBtExport() {
+    console.log(123123);
+    this.gridApi.exportDataAsExcel({
+      fileName: (this.props.fileName || '') + moment().format('YYYYMMDD'),
+    });
+  }
   quickFilter(value) {
     this.gridApi.setQuickFilter(value);
   }
@@ -72,9 +79,16 @@ class JTable extends PureComponent {
     return (
       <div>
         <Row gutter={16} style={{ padding: '8px 0' }}>
-          <Col span={18} />
-          <Col span={6}>
-            <Search placeholder="在表格中搜索..." onSearch={value => this.quickFilter(value)} />
+          <Col md={18} sm={24} />
+          <Col md={6} sm={24}>
+            <Row>
+              <Col span={20}>
+                <Search placeholder="在表格中搜索..." onSearch={value => this.quickFilter(value)} />
+              </Col>
+              <Col span={4} style={{ textAlign: 'right' }}>
+                <Button type="dashed" onClick={() => this.onBtExport()} icon="download" />
+              </Col>
+            </Row>
           </Col>
         </Row>
         <div className="ag-theme-balham" style={{ height: '500px', width: '100%' }}>

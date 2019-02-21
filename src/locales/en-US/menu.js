@@ -38,5 +38,6 @@ export default {
   'menu.account.logout': 'Logout',
   'menu.system': 'system',
   'menu.system.role': 'role',
-  'menu.system.interface': 'interface',
+  'menu.system.interfacelist': 'interface',
+  'menu.system.layoutdemo': 'layoutdemo',
 };

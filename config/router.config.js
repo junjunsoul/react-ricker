@@ -34,7 +34,6 @@ export default [
   {
     path: '/',
     component: '../layouts/BasicLayout',
-    // authChip: ['system.test_list', 'system.test_add'],
     routes: [
       // dashboard
       { path: '/', redirect: '/dashboard/analysis' },
@@ -53,6 +52,7 @@ export default [
             path: '/dashboard/monitor',
             name: 'monitor',
             authChip:['system.monitor_tag'],
+            miniDepend:['system.monitor_tag'],
             component: './Dashboard/Monitor',
           },
           {
@@ -290,10 +290,15 @@ export default [
             component: './System/role',
           },
           {
-            path: 'system/interface',
-            name: 'interface',
-            component: './System/interface'
-          }
+            path: '/system/interface-list',
+            name: 'interfacelist',
+            component: './System/interfaceList'
+          },
+          {
+            path: '/system/layout-demo',
+            name: 'layoutdemo',
+            component: './System/layoutDemo'
+          },
         ]
       },
       // 404

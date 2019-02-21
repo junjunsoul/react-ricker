@@ -1,5 +1,5 @@
 import { queryNotices } from '@/services/api';
-
+import { deepCopy } from '@/utils/utils';
 export default {
   namespace: 'global',
 
@@ -7,6 +7,7 @@ export default {
     collapsed: false,
     isMobile: false,
     notices: [],
+    allRoute: [],
   },
 
   effects: {
@@ -85,6 +86,12 @@ export default {
       return {
         ...state,
         notices: payload,
+      };
+    },
+    saveAllRoute(state, { payload }) {
+      return {
+        ...state,
+        allRoute: deepCopy(payload),
       };
     },
     saveClearedNotices(state, { payload }) {

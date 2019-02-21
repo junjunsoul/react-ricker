@@ -73,26 +73,20 @@ export default {
     },
   ],
   'POST /api/login/account': (req, res) => {
-    const { password, userName, type } = req.body;
-    if (password === 'ant.design' && userName === 'admin') {
+    const { password, userName } = req.body;
+    if (password === '123456' && userName === 'admin') {
       res.send({
-        status: 'ok',
-        type,
-        currentAuthority: 'admin',
-      });
-      return;
-    }
-    if (password === 'ant.design' && userName === 'user') {
-      res.send({
-        status: 'ok',
-        type,
-        currentAuthority: 'user',
+        code:0,
+        data:{
+          currentAuthority: 'admin',
+          access_token: "0199b31c966b0b8ab82a87d37053d78bf8e12d15",
+          expires_in: 1209600
+        }
       });
       return;
     }
     res.send({
-      status: 'error',
-      type,
+      code: -1,
       currentAuthority: 'guest',
     });
   },
@@ -184,7 +178,7 @@ export default {
           role_name:'超管',
           create:'管理员',
           create_time:'2019-02-13 17:47',
-          interface:[
+          authPaths:[
             '/api/getMenu',
             '/api/test/add',
             '/api/test/list',

@@ -22,6 +22,10 @@ class BasicLayout extends React.PureComponent {
       type: 'setting/getSetting',
     });
     dispatch({
+      type: 'global/saveAllRoute',
+      payload: routes,
+    });
+    dispatch({
       type: 'user/fetchMenuData',
       payload: { routes },
     });

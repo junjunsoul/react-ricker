@@ -201,10 +201,10 @@ export default class MobilMenu extends PureComponent {
         <NavBar
           mode="dark"
           className={styles['mobil-nav']}
-          leftContent={[<img src={logo} alt="logo" width="32" />]}
-          rightContent={[
-            <IconFont type="icon-menu" style={{ fontSize: '23px' }} onClick={this.onOpenChange} />,
-          ]}
+          leftContent={<img src={logo} alt="logo" width="32" />}
+          rightContent={
+            <IconFont type="icon-menu" style={{ fontSize: '23px' }} onClick={this.onOpenChange} />
+          }
         >
           <div className={styles['title']}>{title}</div>
         </NavBar>

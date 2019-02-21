@@ -38,6 +38,7 @@ export default {
   'menu.account.logout': '退出登录',
   'menu.system': '系统管理',
   'menu.system.role': '角色设置',
-  'menu.system.interface': '接口清单',
+  'menu.system.interfacelist': '接口清单',
+  'menu.system.layoutdemo': '页面demo',
   'menu.test': '测试页',
 };

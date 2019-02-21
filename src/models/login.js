@@ -2,12 +2,12 @@ import { routerRedux } from 'dva/router';
 import { stringify } from 'qs';
 import { fakeAccountLogin, getFakeCaptcha } from '@/services/api';
 import { getPageQuery } from '@/utils/utils';
-
+import Cookies from 'js-cookie'
 export default {
   namespace: 'login',
 
   state: {
-    status: undefined,
+    status: -1,
   },
 
   effects: {
@@ -18,7 +18,11 @@ export default {
         payload: response,
       });
       // Login successfully
-      if (response.status === 'ok') {
+      if (!response.code) {
+
+        const res=response.data||{}
+        Cookies.set('access_token',res.access_token,{ expires:res.expires_in/86400 })
+
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params;
@@ -65,8 +69,7 @@ export default {
     changeLoginStatus(state, { payload }) {
       return {
         ...state,
-        status: payload.status,
-        type: payload.type,
+        status:!payload.code?'ok':'error'
       };
     },
   },

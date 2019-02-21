@@ -1,5 +1,3 @@
-import memoizeOne from 'memoize-one';
-import { isEqual } from 'lodash';
 import { handleChip } from './index';
 
 // Conversion router to menu.
@@ -51,13 +49,12 @@ function checkParent(item, available) {
     checkParent(item.parent, available);
   }
 }
-const memoizeOneFormatter = memoizeOne(formatter, isEqual);
-
 /**
  * get SubMenu or Item
  */
 const getSubMenu = (item, authority, parent) => {
   item.parent = parent;
+  check(authority, item);
   if (item.children) {
     item.available = false;
     return {
@@ -65,7 +62,6 @@ const getSubMenu = (item, authority, parent) => {
       children: filterMenuData(item.children, authority, item), // eslint-disable-line
     };
   }
-  check(authority, item);
   return item;
 };
 
@@ -80,5 +76,5 @@ const filterMenuData = (menuData, authority, parent = null) => {
 };
 
 export function getAuthMenus(routes, authority) {
-  return filterMenuData(memoizeOneFormatter(routes), authority);
+  return filterMenuData(formatter(routes), authority);
 }

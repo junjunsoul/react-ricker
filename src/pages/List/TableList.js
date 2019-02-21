@@ -272,126 +272,43 @@ class UpdateForm extends PureComponent {
   }
 }
 
-/* eslint react/no-multi-comp:0 */
-@connect(({ rule, loading }) => ({
-  rule,
-  loading: loading.models.rule,
-}))
 @Form.create()
-class TableList extends PureComponent {
-  state = {
-    modalVisible: false,
-    updateModalVisible: false,
-    expandForm: false,
-    selectedRows: [],
-    formValues: {},
-    stepFormValues: {},
-  };
-
-  columns = [
-    {
-      title: '规则名称',
-      dataIndex: 'name',
-    },
-    {
-      title: '描述',
-      dataIndex: 'desc',
-    },
-    {
-      title: '服务调用次数',
-      dataIndex: 'callNo',
-      sorter: true,
-      align: 'right',
-      render: val => `${val} 万`,
-      // mark to display a total number
-      needTotal: true,
-    },
-    {
-      title: '状态',
-      dataIndex: 'status',
-      filters: [
-        {
-          text: status[0],
-          value: 0,
-        },
-        {
-          text: status[1],
-          value: 1,
-        },
-        {
-          text: status[2],
-          value: 2,
-        },
-        {
-          text: status[3],
-          value: 3,
-        },
-      ],
-      render(val) {
-        return <Badge status={statusMap[val]} text={status[val]} />;
-      },
-    },
-    {
-      title: '上次调度时间',
-      dataIndex: 'updatedAt',
-      sorter: true,
-      render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
-    },
-    {
-      title: '操作',
-      render: (text, record) => (
-        <Fragment>
-          <a onClick={() => this.handleUpdateModalVisible(true, record)}>配置</a>
-          <Divider type="vertical" />
-          <a href="">订阅警报</a>
-        </Fragment>
-      ),
-    },
-  ];
-
-  componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'rule/fetch',
-    });
+class SearchForm extends PureComponent{
+  constructor(props){
+    super(props)
+    this.state={
+      expandForm: false,
+      formValues: {}
+    }
   }
 
-  handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch } = this.props;
-    const { formValues } = this.state;
+  handleSearch = e => {
+    e.preventDefault();
 
-    const filters = Object.keys(filtersArg).reduce((obj, key) => {
-      const newObj = { ...obj };
-      newObj[key] = getValue(filtersArg[key]);
-      return newObj;
-    }, {});
+    const { tableReload, form } = this.props;
 
-    const params = {
-      currentPage: pagination.current,
-      pageSize: pagination.pageSize,
-      ...formValues,
-      ...filters,
-    };
-    if (sorter.field) {
-      params.sorter = `${sorter.field}_${sorter.order}`;
-    }
+    form.validateFields((err, fieldsValue) => {
+      if (err) return;
 
-    dispatch({
-      type: 'rule/fetch',
-      payload: params,
+      const values = {
+        ...fieldsValue,
+      };
+
+      this.setState({
+        formValues: values,
+      });
+
+      tableReload(this.state.formValues)
     });
   };
 
   handleFormReset = () => {
-    const { form, dispatch } = this.props;
+    const { form ,tableReload} = this.props;
     form.resetFields();
     this.setState({
       formValues: {},
     });
-    dispatch({
-      type: 'rule/fetch',
-      payload: {},
-    });
+    tableReload({})
   };
 
   toggleForm = () => {
@@ -399,101 +316,6 @@ class TableList extends PureComponent {
     this.setState({
       expandForm: !expandForm,
     });
-  };
-
-  handleMenuClick = e => {
-    const { dispatch } = this.props;
-    const { selectedRows } = this.state;
-
-    if (!selectedRows) return;
-    switch (e.key) {
-      case 'remove':
-        dispatch({
-          type: 'rule/remove',
-          payload: {
-            key: selectedRows.map(row => row.key),
-          },
-          callback: () => {
-            this.setState({
-              selectedRows: [],
-            });
-          },
-        });
-        break;
-      default:
-        break;
-    }
-  };
-
-  handleSelectRows = rows => {
-    this.setState({
-      selectedRows: rows,
-    });
-  };
-
-  handleSearch = e => {
-    e.preventDefault();
-
-    const { dispatch, form } = this.props;
-
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-
-      const values = {
-        ...fieldsValue,
-        updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
-      };
-
-      this.setState({
-        formValues: values,
-      });
-
-      dispatch({
-        type: 'rule/fetch',
-        payload: values,
-      });
-    });
-  };
-
-  handleModalVisible = flag => {
-    this.setState({
-      modalVisible: !!flag,
-    });
-  };
-
-  handleUpdateModalVisible = (flag, record) => {
-    this.setState({
-      updateModalVisible: !!flag,
-      stepFormValues: record || {},
-    });
-  };
-
-  handleAdd = fields => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'rule/add',
-      payload: {
-        desc: fields.desc,
-      },
-    });
-
-    message.success('添加成功');
-    this.handleModalVisible();
-  };
-
-  handleUpdate = fields => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'rule/update',
-      payload: {
-        name: fields.name,
-        desc: fields.desc,
-        key: fields.key,
-      },
-    });
-
-    message.success('配置成功');
-    this.handleUpdateModalVisible();
   };
 
   renderSimpleForm() {
@@ -610,10 +432,204 @@ class TableList extends PureComponent {
     );
   }
 
-  renderForm() {
+  render(){
     const { expandForm } = this.state;
-    return expandForm ? this.renderAdvancedForm() : this.renderSimpleForm();
+      return(
+        <div className={styles.tableListForm}>
+        {
+          expandForm ? this.renderAdvancedForm() : this.renderSimpleForm()
+        }
+        </div>
+      )
   }
+}
+/* eslint react/no-multi-comp:0 */
+@connect(({ rule, loading }) => ({
+  rule,
+  loading: loading.models.rule,
+}))
+@Form.create()
+class TableList extends PureComponent {
+  state = {
+    modalVisible: false,
+    updateModalVisible: false,
+    selectedRows: [],
+    stepFormValues: {},
+  };
+
+  columns = [
+    {
+      title: '规则名称',
+      dataIndex: 'name',
+    },
+    {
+      title: '描述',
+      dataIndex: 'desc',
+    },
+    {
+      title: '服务调用次数',
+      dataIndex: 'callNo',
+      sorter: true,
+      align: 'right',
+      render: val => `${val} 万`,
+      // mark to display a total number
+      needTotal: true,
+    },
+    {
+      title: '状态',
+      dataIndex: 'status',
+      filters: [
+        {
+          text: status[0],
+          value: 0,
+        },
+        {
+          text: status[1],
+          value: 1,
+        },
+        {
+          text: status[2],
+          value: 2,
+        },
+        {
+          text: status[3],
+          value: 3,
+        },
+      ],
+      render(val) {
+        return <Badge status={statusMap[val]} text={status[val]} />;
+      },
+    },
+    {
+      title: '上次调度时间',
+      dataIndex: 'updatedAt',
+      sorter: true,
+      render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+    },
+    {
+      title: '操作',
+      render: (text, record) => (
+        <Fragment>
+          <a onClick={() => this.handleUpdateModalVisible(true, record)}>配置</a>
+          <Divider type="vertical" />
+          <a href="">订阅警报</a>
+        </Fragment>
+      ),
+    },
+  ];
+
+  componentDidMount() {
+    this.tableReload({})
+  }
+
+  handleStandardTableChange = (pagination, filtersArg, sorter) => {
+    const { dispatch } = this.props;
+    const { formValues } = this.state;
+
+    const filters = Object.keys(filtersArg).reduce((obj, key) => {
+      const newObj = { ...obj };
+      newObj[key] = getValue(filtersArg[key]);
+      return newObj;
+    }, {});
+
+    const params = {
+      currentPage: pagination.current,
+      pageSize: pagination.pageSize,
+      ...formValues,
+      ...filters,
+    };
+    if (sorter.field) {
+      params.sorter = `${sorter.field}_${sorter.order}`;
+    }
+
+    dispatch({
+      type: 'rule/fetch',
+      payload: params,
+    });
+  };
+
+  handleMenuClick = e => {
+    const { dispatch } = this.props;
+    const { selectedRows } = this.state;
+
+    if (!selectedRows) return;
+    switch (e.key) {
+      case 'remove':
+        dispatch({
+          type: 'rule/remove',
+          payload: {
+            key: selectedRows.map(row => row.key),
+          },
+          callback: () => {
+            this.setState({
+              selectedRows: [],
+            });
+          },
+        });
+        break;
+      default:
+        break;
+    }
+  };
+
+  handleSelectRows = rows => {
+    this.setState({
+      selectedRows: rows,
+    });
+  };
+
+  tableReload = values => {
+    const {dispatch} = this.props
+    dispatch({
+      type: 'rule/fetch',
+      payload: values,
+    });
+  };
+
+  handleModalVisible = flag => {
+    this.setState({
+      modalVisible: !!flag,
+    });
+  };
+
+  handleUpdateModalVisible = (flag, record) => {
+    this.setState({
+      updateModalVisible: !!flag,
+      stepFormValues: record || {},
+    });
+  };
+
+  handleAdd = fields => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'rule/add',
+      payload: {
+        desc: fields.desc,
+      },
+    });
+
+    message.success('添加成功');
+    this.handleModalVisible();
+  };
+
+  handleUpdate = fields => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'rule/update',
+      payload: {
+        name: fields.name,
+        desc: fields.desc,
+        key: fields.key,
+      },
+    });
+
+    message.success('配置成功');
+    this.handleUpdateModalVisible();
+  };
+
+  saveSearchFormRef = searchFormRef => {
+    this.searchFormRef = searchFormRef;
+  };
 
   render() {
     const {
@@ -640,7 +656,9 @@ class TableList extends PureComponent {
       <PageHeaderWrapper title="查询表格">
         <Card bordered={false}>
           <div className={styles.tableList}>
-            <div className={styles.tableListForm}>{this.renderForm()}</div>
+            <SearchForm
+              tableReload={this.tableReload} 
+              wrappedComponentRef={this.saveSearchFormRef}/>
             <div className={styles.tableListOperator}>
               <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
                 新建

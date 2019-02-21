@@ -1,40 +1,16 @@
 import { roleList, getRole } from '@/services/role';
 export default {
   namespace: 'system',
-  state: {
-    roleList: [],
-    roleInfo: [],
-  },
+  state: {},
   effects: {
-    *fetchRoleList(payload, { call, put }) {
+    *fetchRoleList({ payload, callback }, { call, put }) {
       const response = yield call(roleList.req, payload);
-      if (response && !response.code) {
-        yield put({
-          type: 'saveRoleList',
-          payload: response,
-        });
-      }
+      callback(response);
     },
-    *fetchRoleInfo(payload, { call, put }) {
+    *fetchRoleInfo({ payload, callback }, { call, put }) {
       const response = yield call(getRole.req, payload);
-      yield put({
-        type: 'saveRoleInfo',
-        payload: response,
-      });
+      callback(response);
     },
   },
-  reducers: {
-    saveRoleList(state, { payload }) {
-      return {
-        ...state,
-        roleList: payload.data,
-      };
-    },
-    saveRoleInfo(state, { payload }) {
-      return {
-        ...state,
-        roleInfo: payload.data,
-      };
-    },
-  },
+  reducers: {},
 };
