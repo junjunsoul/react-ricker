@@ -15,26 +15,13 @@ export default [
       { path: '/user/register-result', component: './User/RegisterResult' },
     ],
   },
-  //mobil
-  {
-    path: '/mobil',
-    component: '../layouts/BasicLayout',
-    routes: [
-      {
-        authChip: ['system.test_list', 'system.test_add'],
-        miniDepend: ['system.test_list'],
-        isMobile: true,
-        path: '/mobil/test',
-        name: 'test',
-        component: './Mobil/test'
-      },
-    ],
-  },
+
   // app
   {
     path: '/',
     component: '../layouts/BasicLayout',
     routes: [
+
       // dashboard
       { path: '/', redirect: '/dashboard/analysis' },
       {
@@ -44,15 +31,16 @@ export default [
           {
             path: '/dashboard/analysis',
             name: 'analysis',
-            authChip: ['system.analysis_charts'],
-            miniDepend: ['system.analysis_charts'],
+            authChip: ['report.analysis_charts'],
+            miniDepend: ['report.analysis_charts'],
             component: './Dashboard/Analysis',
           },
           {
             path: '/dashboard/monitor',
             name: 'monitor',
-            authChip:['system.monitor_tag'],
-            miniDepend:['system.monitor_tag'],
+            
+            authChip:['report.monitor_tag'],
+            miniDepend:['report.monitor_tag'],
             component: './Dashboard/Monitor',
           },
           {
@@ -62,6 +50,21 @@ export default [
           },
         ],
       },
+      //mobil
+      {
+        path: '/mobil',
+        name: 'mobil',
+        routes: [
+          {
+            authChip: ['test.test_list', 'test.test_add'],
+            miniDepend: ['test.test_list'],
+            isMobile: true,
+            path: '/mobil/test',
+            name: 'test',
+            component: './Mobil/test'
+          },
+        ],
+      },      
       // forms
       {
         path: '/form',
@@ -153,17 +156,17 @@ export default [
             ],
           },
           {
-            path: '/profile',
+            path: '/list/profile',
             name: 'profile',
             routes: [
               // profile
               {
-                path: '/profile/basic',
+                path: '/list/profile/basic',
                 name: 'basic',
                 component: './Profile/BasicProfile',
               },
               {
-                path: '/profile/advanced',
+                path: '/list/profile/advanced',
                 name: 'advanced',
                 component: './Profile/AdvancedProfile',
               },
@@ -178,39 +181,39 @@ export default [
         routes:[
           {
             name: 'result',
-            path: '/result',
+            path: '/other/result',
             routes: [
               // result
               {
-                path: '/result/success',
+                path: '/other/result/success',
                 name: 'success',
                 component: './Result/Success',
               },
-              { path: '/result/fail', name: 'fail', component: './Result/Error' },
+              { path: '/other/result/fail', name: 'fail', component: './Result/Error' },
             ],
           },
           {
             name: 'exception',
-            path: '/exception',
+            path: '/other/exception',
             routes: [
               // exception
               {
-                path: '/exception/403',
+                path: '/other/exception/403',
                 name: 'not-permission',
                 component: './Exception/403',
               },
               {
-                path: '/exception/404',
+                path: '/other/exception/404',
                 name: 'not-find',
                 component: './Exception/404',
               },
               {
-                path: '/exception/500',
+                path: '/other/exception/500',
                 name: 'server-error',
                 component: './Exception/500',
               },
               {
-                path: '/exception/trigger',
+                path: '/other/exception/trigger',
                 name: 'trigger',
                 hideInMenu: true,
                 component: './Exception/TriggerException',

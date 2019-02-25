@@ -1,4 +1,6 @@
 import system from './chip/system';
+import report from './chip/report';
+import test from './chip/test';
 import { isEmpty } from 'lodash';
 
 export const authChip = {
@@ -6,6 +8,14 @@ export const authChip = {
     title: '系统管理',
     chip: system,
   },
+  report: {
+    title:'报表权限',
+    chip:report
+  },
+  test: {
+    title: '测试权限模块',
+    chip: test
+  }
 };
 //根据名称获取权限对象
 export const getChip = chipName => {

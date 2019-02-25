@@ -40,5 +40,6 @@ export default {
   'menu.system.role': '角色设置',
   'menu.system.interfacelist': '接口清单',
   'menu.system.layoutdemo': '页面demo',
-  'menu.test': '测试页',
+  'menu.mobil': '移动菜单',
+  'menu.mobil.test': '测试页',
 };

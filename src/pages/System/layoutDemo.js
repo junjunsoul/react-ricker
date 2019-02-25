@@ -35,7 +35,7 @@ class FormLayout extends PureComponent {
   }
   add = () => {
     this.setState({
-      title:'新增',
+      title: '新增',
       modalVisible: true,
       formValues: {
         role_name: '',
@@ -53,7 +53,7 @@ class FormLayout extends PureComponent {
             data: { authPaths },
           } = response;
           this.setState({
-            title:'修改',
+            title: '修改',
             modalVisible: true,
             formValues: data,
           });
@@ -82,7 +82,7 @@ class FormLayout extends PureComponent {
     });
   };
   render() {
-    const { form,pageName } = this.props;
+    const { form, pageName } = this.props;
     return (
       <Modal
         destroyOnClose
@@ -105,12 +105,12 @@ class FormLayout extends PureComponent {
 }
 
 @Form.create()
-class SearchForm extends PureComponent{
-  constructor(props){
-    super(props)
-    this.state={
-      expandForm: false
-    }
+class SearchForm extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      expandForm: false,
+    };
   }
 
   handleSearch = e => {
@@ -119,14 +119,14 @@ class SearchForm extends PureComponent{
     const { tableReload, form } = this.props;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
-      tableReload(fieldsValue)
+      tableReload(fieldsValue);
     });
   };
 
   handleFormReset = () => {
-    const { form ,tableReload} = this.props;
+    const { form, tableReload } = this.props;
     form.resetFields();
-    tableReload({})
+    tableReload({});
   };
 
   toggleForm = () => {
@@ -250,15 +250,13 @@ class SearchForm extends PureComponent{
     );
   }
 
-  render(){
+  render() {
     const { expandForm } = this.state;
-      return(
-        <div className={styles.tableListForm}>
-        {
-          expandForm ? this.renderAdvancedForm() : this.renderSimpleForm()
-        }
-        </div>
-      )
+    return (
+      <div className={styles.tableListForm}>
+        {expandForm ? this.renderAdvancedForm() : this.renderSimpleForm()}
+      </div>
+    );
   }
 }
 const actionRenderer = props => {
@@ -287,7 +285,7 @@ class LayoutDemo extends PureComponent {
     super(props);
     this.state = {
       pageName: '页面Demo',
-      tableList:[],
+      tableList: [],
       frameworkComponents: {
         actionRenderer,
       },
@@ -306,8 +304,8 @@ class LayoutDemo extends PureComponent {
     this.formRef.edit();
   };
   componentDidMount() {
-      this.tableReload({})
-  };
+    this.tableReload({});
+  }
 
   tableReload = values => {
     const { dispatch } = this.props;
@@ -321,9 +319,9 @@ class LayoutDemo extends PureComponent {
         }
       },
     });
-    console.log(values)
+    console.log(values);
   };
-  
+
   saveFormRef = formRef => {
     this.formRef = formRef;
   };
@@ -340,8 +338,9 @@ class LayoutDemo extends PureComponent {
         <Card bordered={false}>
           <div className={styles.tableList}>
             <SearchForm
-                tableReload={this.tableReload} 
-                wrappedComponentRef={this.saveSearchFormRef}/>
+              tableReload={this.tableReload}
+              wrappedComponentRef={this.saveSearchFormRef}
+            />
             <div className={styles.tableListOperator}>
               <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>
                 新建
@@ -353,7 +352,7 @@ class LayoutDemo extends PureComponent {
               rowData={this.state.tableList}
               context={this}
               frameworkComponents={this.state.frameworkComponents}
-            />        
+            />
           </div>
         </Card>
         <FormLayout wrappedComponentRef={this.saveFormRef} pageName={this.state.pageName} />

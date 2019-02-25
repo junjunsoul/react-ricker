@@ -2,7 +2,7 @@ import { routerRedux } from 'dva/router';
 import { stringify } from 'qs';
 import { fakeAccountLogin, getFakeCaptcha } from '@/services/api';
 import { getPageQuery } from '@/utils/utils';
-import Cookies from 'js-cookie'
+import Cookies from 'js-cookie';
 export default {
   namespace: 'login',
 
@@ -19,9 +19,8 @@ export default {
       });
       // Login successfully
       if (!response.code) {
-
-        const res=response.data||{}
-        Cookies.set('access_token',res.access_token,{ expires:res.expires_in/86400 })
+        const res = response.data || {};
+        Cookies.set('access_token', res.access_token, { expires: res.expires_in / 86400 });
 
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
@@ -50,10 +49,10 @@ export default {
       yield put({
         type: 'changeLoginStatus',
         payload: {
-          status: false,
-          currentAuthority: 'guest',
+          code: false
         },
       });
+      Cookies.remove('access_token')
       yield put(
         routerRedux.push({
           pathname: '/user/login',
@@ -69,7 +68,7 @@ export default {
     changeLoginStatus(state, { payload }) {
       return {
         ...state,
-        status:!payload.code?'ok':'error'
+        status: !payload.code ? 'ok' : 'error',
       };
     },
   },

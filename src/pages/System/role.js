@@ -341,7 +341,7 @@ class Role extends PureComponent {
     super(props);
     this.state = {
       name: '角色设置',
-      tableList:[],
+      tableList: [],
       frameworkComponents: {
         actionRenderer,
       },
@@ -394,7 +394,7 @@ class Role extends PureComponent {
               rowData={this.state.tableList}
               context={this}
               frameworkComponents={this.state.frameworkComponents}
-            />        
+            />
           </div>
         </Card>
         <FormLayout wrappedComponentRef={this.saveFormRef} />

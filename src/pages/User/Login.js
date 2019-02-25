@@ -35,7 +35,6 @@ class LoginPage extends Component {
     const { login, submitting } = this.props;
     return (
       <div className={styles.main}>
-      
         <Login
           onTabChange={this.onTabChange}
           onSubmit={this.handleSubmit}
@@ -43,39 +42,42 @@ class LoginPage extends Component {
             this.loginForm = form;
           }}
         >
-        
-            <Divider style={{color:'#777'}}><FormattedMessage id="app.login.tab-login-credentials" /></Divider>
-            {login.status === 'error' &&
-              !submitting &&
-              this.renderMessage(formatMessage({ id: 'app.login.message-invalid-credentials' }))}
-            <UserName
-              name="userName"
-              placeholder={`${formatMessage({ id: 'app.login.userName' })}: admin`}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage({ id: 'validation.userName.required' }),
-                },
-              ]}
-            />
-            <Password
-              name="password"
-              placeholder={`${formatMessage({ id: 'app.login.password' })}: 123456`}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage({ id: 'validation.password.required' }),
-                },
-              ]}
-              onPressEnter={() => this.loginForm.validateFields(this.handleSubmit)}
-            />
+          <Divider style={{ color: '#777' }}>
+            <FormattedMessage id="app.login.tab-login-credentials" />
+          </Divider>
+          {login.status === 'error' &&
+            !submitting &&
+            this.renderMessage(formatMessage({ id: 'app.login.message-invalid-credentials' }))}
+          <UserName
+            name="userName"
+            placeholder={`${formatMessage({ id: 'app.login.userName' })}: admin`}
+            rules={[
+              {
+                required: true,
+                message: formatMessage({ id: 'validation.userName.required' }),
+              },
+            ]}
+          />
+          <Password
+            name="password"
+            placeholder={`${formatMessage({ id: 'app.login.password' })}: 123456`}
+            rules={[
+              {
+                required: true,
+                message: formatMessage({ id: 'validation.password.required' }),
+              },
+            ]}
+            onPressEnter={() => this.loginForm.validateFields(this.handleSubmit)}
+          />
           <Submit loading={submitting}>
             <FormattedMessage id="app.login.login" />
           </Submit>
-          <Divider style={{color:'#777'}}><FormattedMessage id="app.login.sign-in-with" /></Divider>
+          <Divider style={{ color: '#777' }}>
+            <FormattedMessage id="app.login.sign-in-with" />
+          </Divider>
           <div className={styles.other}>
-              <IconFont type="icon-weixin" className={styles.icon} theme="outlined" />
-              <IconFont type="icon-QQ" className={styles.icon} theme="outlined" />              
+            <IconFont type="icon-weixin" className={styles.icon} theme="outlined" />
+            <IconFont type="icon-QQ" className={styles.icon} theme="outlined" />
           </div>
         </Login>
       </div>

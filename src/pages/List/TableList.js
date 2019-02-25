@@ -273,13 +273,13 @@ class UpdateForm extends PureComponent {
 }
 
 @Form.create()
-class SearchForm extends PureComponent{
-  constructor(props){
-    super(props)
-    this.state={
+class SearchForm extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
       expandForm: false,
-      formValues: {}
-    }
+      formValues: {},
+    };
   }
 
   handleSearch = e => {
@@ -298,17 +298,17 @@ class SearchForm extends PureComponent{
         formValues: values,
       });
 
-      tableReload(this.state.formValues)
+      tableReload(this.state.formValues);
     });
   };
 
   handleFormReset = () => {
-    const { form ,tableReload} = this.props;
+    const { form, tableReload } = this.props;
     form.resetFields();
     this.setState({
       formValues: {},
     });
-    tableReload({})
+    tableReload({});
   };
 
   toggleForm = () => {
@@ -432,15 +432,13 @@ class SearchForm extends PureComponent{
     );
   }
 
-  render(){
+  render() {
     const { expandForm } = this.state;
-      return(
-        <div className={styles.tableListForm}>
-        {
-          expandForm ? this.renderAdvancedForm() : this.renderSimpleForm()
-        }
-        </div>
-      )
+    return (
+      <div className={styles.tableListForm}>
+        {expandForm ? this.renderAdvancedForm() : this.renderSimpleForm()}
+      </div>
+    );
   }
 }
 /* eslint react/no-multi-comp:0 */
@@ -519,7 +517,7 @@ class TableList extends PureComponent {
   ];
 
   componentDidMount() {
-    this.tableReload({})
+    this.tableReload({});
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
@@ -579,7 +577,7 @@ class TableList extends PureComponent {
   };
 
   tableReload = values => {
-    const {dispatch} = this.props
+    const { dispatch } = this.props;
     dispatch({
       type: 'rule/fetch',
       payload: values,
@@ -657,8 +655,9 @@ class TableList extends PureComponent {
         <Card bordered={false}>
           <div className={styles.tableList}>
             <SearchForm
-              tableReload={this.tableReload} 
-              wrappedComponentRef={this.saveSearchFormRef}/>
+              tableReload={this.tableReload}
+              wrappedComponentRef={this.saveSearchFormRef}
+            />
             <div className={styles.tableListOperator}>
               <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
                 新建
