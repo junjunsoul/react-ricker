@@ -164,7 +164,7 @@ class FormLayout extends PureComponent {
                     <Radio value={0}>停用</Radio>
                   </Radio.Group>
                 )}
-              </FormItem>          
+              </FormItem>
             </div>
           </Col>
           <Col span={12}>
@@ -292,11 +292,13 @@ class Role extends PureComponent {
     return (
       <Row>
         <Col span={12}>
-            {authorized['add'] && (
-              <div className={styles.tableListOperator}>
-                <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>新建</Button>
-              </div>
-            )}
+          {authorized['add'] && (
+            <div className={styles.tableListOperator}>
+              <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>
+                新建
+              </Button>
+            </div>
+          )}
         </Col>
         <Col span={12} style={{ textAlign: 'right' }}>
           <div className={styles.tableListOperator}>
@@ -304,7 +306,7 @@ class Role extends PureComponent {
               <Radio.Button value="">全部</Radio.Button>
               <Radio.Button value="1">启用</Radio.Button>
               <Radio.Button value="0">停用</Radio.Button>
-            </Radio.Group>        
+            </Radio.Group>
           </div>
         </Col>
       </Row>
@@ -354,9 +356,7 @@ class Role extends PureComponent {
     this.formRef = formRef;
   };
   render() {
-    const {
-      loading,
-    } = this.props;
+    const { loading } = this.props;
     return (
       <PageHeaderWrapper>
         <Card bordered={false}>

@@ -208,7 +208,7 @@ class FormLayout extends PureComponent {
                 <Radio value={0}>停用</Radio>
               </Radio.Group>
             )}
-          </FormItem>      
+          </FormItem>
         </div>
       </Modal>
     );
@@ -256,7 +256,7 @@ class UserMange extends PureComponent {
     this.state = {
       name: '账号管理',
       tableList: [],
-      columnCus:[],
+      columnCus: [],
       status: '',
       gridComponents: {
         actionRenderer,
@@ -363,11 +363,13 @@ class UserMange extends PureComponent {
     return (
       <Row>
         <Col span={12}>
-            {authorized['add'] && (
-              <div className={styles.tableListOperator}>
-                <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>新建</Button>
-              </div>
-            )}
+          {authorized['add'] && (
+            <div className={styles.tableListOperator}>
+              <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>
+                新建
+              </Button>
+            </div>
+          )}
         </Col>
         <Col span={12} style={{ textAlign: 'right' }}>
           <div className={styles.tableListOperator}>
@@ -375,7 +377,7 @@ class UserMange extends PureComponent {
               <Radio.Button value="">全部</Radio.Button>
               <Radio.Button value="1">启用</Radio.Button>
               <Radio.Button value="0">停用</Radio.Button>
-            </Radio.Group>        
+            </Radio.Group>
           </div>
         </Col>
       </Row>
@@ -385,9 +387,7 @@ class UserMange extends PureComponent {
     this.formRef = formRef;
   };
   render() {
-    const {
-      loading,
-    } = this.props;
+    const { loading } = this.props;
     return (
       <PageHeaderWrapper>
         <Card bordered={false}>

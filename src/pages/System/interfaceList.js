@@ -122,31 +122,30 @@ class FormLayout extends PureComponent {
           </Button>,
         ]}
       >
-      <div className={styles.formLayout}>
-        <FormItem label="接口地址">
-          {form.getFieldDecorator('route', {
-            initialValue: this.state.formValues.route,
-            rules: [{ required: true, message: '必填项！' }],
-          })(<Input placeholder="请输入" />)}
-        </FormItem>
-        <FormItem label="名称">
-          {form.getFieldDecorator('name', {
-            initialValue: this.state.formValues.name,
-            rules: [{ required: true, message: '必填项！' }],
-          })(<Input placeholder="请输入" />)}
-        </FormItem>
-        <FormItem label="描述">
-          {form.getFieldDecorator('description', {
-            initialValue: this.state.formValues.description,
-          })(<TextArea rows={4} placeholder="请输入" />)}
-        </FormItem>
-        <FormItem label="文档">
-          {form.getFieldDecorator('document', {
-            initialValue: this.state.formValues.document,
-          })(<TextArea rows={4} placeholder="请输入" />)}
-        </FormItem>      
-      </div>
-
+        <div className={styles.formLayout}>
+          <FormItem label="接口地址">
+            {form.getFieldDecorator('route', {
+              initialValue: this.state.formValues.route,
+              rules: [{ required: true, message: '必填项！' }],
+            })(<Input placeholder="请输入" />)}
+          </FormItem>
+          <FormItem label="名称">
+            {form.getFieldDecorator('name', {
+              initialValue: this.state.formValues.name,
+              rules: [{ required: true, message: '必填项！' }],
+            })(<Input placeholder="请输入" />)}
+          </FormItem>
+          <FormItem label="描述">
+            {form.getFieldDecorator('description', {
+              initialValue: this.state.formValues.description,
+            })(<TextArea rows={4} placeholder="请输入" />)}
+          </FormItem>
+          <FormItem label="文档">
+            {form.getFieldDecorator('document', {
+              initialValue: this.state.formValues.document,
+            })(<TextArea rows={4} placeholder="请输入" />)}
+          </FormItem>
+        </div>
       </Modal>
     );
   }
@@ -388,21 +387,21 @@ class InterfaceList extends PureComponent {
   saveAuthLayout = formRef => {
     this.authRef = formRef;
   };
-  tableRef=(ref)=>{
-    this.gridApi=ref
-  }
+  tableRef = ref => {
+    this.gridApi = ref;
+  };
   render() {
     const {
       route: { authorized },
       loading,
     } = this.props;
-    const searchBar=authorized['add'] && (
+    const searchBar = authorized['add'] && (
       <div className={styles.tableListOperator}>
         <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>
           新建
         </Button>
       </div>
-    )
+    );
     return (
       <Fragment>
         <Card bordered={false}>

@@ -280,7 +280,7 @@ class AccessLog extends PureComponent {
               rowKey={'access_id'}
               columns={this.state.columnDefs}
               dataSource={this.state.tableList}
-              size='small'
+              size="small"
               loading={loading}
               pagination={{
                 showSizeChanger: true,

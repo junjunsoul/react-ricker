@@ -120,38 +120,40 @@ export default function request(url, option) {
       sessionStorage.removeItem(`${hashcode}:timestamp`);
     }
   }
-  return fetch(url, newOptions)
-    .then(checkStatus)
-    // .then(response => cachedSave(response, hashcode))
-    .then(response => {
-      // DELETE and 204 do not return data by default
-      // using .json will report an error.
-      if (newOptions.method === 'DELETE' || response.status === 204) {
-        return response.text();
-      }
-      const result = response.json();
-      deepCopy(result).then(res => {
-        if (res.code) {
-          if (res.code === 10000 && !window.showPast) {
-            window.showPast = true;
-            Modal.error({
-              title: '错误提示',
-              content: '登录信息过期,请重新登录...',
-              onOk: () => {
-                window.showPast = false;
-                window.g_app._store.dispatch({
-                  type: 'login/logout',
-                });
-              },
-            });
-          } else {
-            notification.error({
-              message: `错误码 ${res.code}: ${response.url.replace(/http:\/\/([^\/]+)\//i, '/')}`,
-              description: res.msg,
-            });
-          }
+  return (
+    fetch(url, newOptions)
+      .then(checkStatus)
+      // .then(response => cachedSave(response, hashcode))
+      .then(response => {
+        // DELETE and 204 do not return data by default
+        // using .json will report an error.
+        if (newOptions.method === 'DELETE' || response.status === 204) {
+          return response.text();
         }
-      });
-      return result;
-    });
+        const result = response.json();
+        deepCopy(result).then(res => {
+          if (res.code) {
+            if (res.code === 10000 && !window.showPast) {
+              window.showPast = true;
+              Modal.error({
+                title: '错误提示',
+                content: '登录信息过期,请重新登录...',
+                onOk: () => {
+                  window.showPast = false;
+                  window.g_app._store.dispatch({
+                    type: 'login/logout',
+                  });
+                },
+              });
+            } else {
+              notification.error({
+                message: `错误码 ${res.code}: ${response.url.replace(/http:\/\/([^\/]+)\//i, '/')}`,
+                description: res.msg,
+              });
+            }
+          }
+        });
+        return result;
+      })
+  );
 }

@@ -4,16 +4,16 @@ import styles from './index.less';
 import moment from 'moment';
 import 'ag-grid-enterprise';
 import { AgGridReact } from 'ag-grid-react';
-import {find,isEmpty} from 'lodash'
+import { find, isEmpty } from 'lodash';
 import { Row, Col, Empty, Input, Button, Spin } from 'antd';
-import {deepCopy,totalHandle} from '@/utils/utils'
+import { deepCopy, totalHandle } from '@/utils/utils';
 const Search = Input.Search;
 class JTable extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      frameworkComponents:{
-        empty:() => <Empty/>
+      frameworkComponents: {
+        empty: () => <Empty />,
       },
       rowSelection: 'multiple',
       //列设置
@@ -64,9 +64,9 @@ class JTable extends PureComponent {
           { statusPanel: 'agAggregationComponent' },
         ],
       },
-      height:400
+      height: 400,
     };
-    this.localCol=this.getLocal()
+    this.localCol = this.getLocal();
     this.tableRef = React.createRef();
   }
   onBtExport() {
@@ -74,116 +74,111 @@ class JTable extends PureComponent {
       fileName: (this.props.fileName || '') + moment().format('YYYYMMDD'),
     });
   }
-  quickFilter=(value)=> {
+  quickFilter = value => {
     this.gridApi.setQuickFilter(value.trim());
-  }
-  totalSum=()=>{
-    const {columnCus,totalNextTick} = this.props
-    let dataList=[]
-    this.gridApi.forEachNodeAfterFilter((node)=>{
-      dataList.push(node.data)
-    })
-    let total=totalHandle(dataList,columnCus)
-    if(isEmpty(total))return
-    if(totalNextTick){
-      totalNextTick(total,(data)=>{
-        this.gridApi.setPinnedTopRowData([data])
-      })
-    }else{
-      this.gridApi.setPinnedTopRowData([total])
+  };
+  totalSum = () => {
+    const { columnCus, totalNextTick } = this.props;
+    let dataList = [];
+    this.gridApi.forEachNodeAfterFilter(node => {
+      dataList.push(node.data);
+    });
+    let total = totalHandle(dataList, columnCus);
+    if (isEmpty(total)) return;
+    if (totalNextTick) {
+      totalNextTick(total, data => {
+        this.gridApi.setPinnedTopRowData([data]);
+      });
+    } else {
+      this.gridApi.setPinnedTopRowData([total]);
     }
-  }
-  autoSizeColumns=()=>{
+  };
+  autoSizeColumns = () => {
     // params.api.sizeColumnsToFit();
     var allColumnIds = [];
     this.gridColumnApi.getAllColumns().forEach(function(column) {
-        allColumnIds.push(column.colId);
+      allColumnIds.push(column.colId);
     });
     this.gridColumnApi.autoSizeColumns(allColumnIds);
-  }
-  onModelUpdated=()=>{
-    if(!this.gridApi)return
-    this.totalSum()
-    setTimeout(()=>{
-      this.autoSizeColumns()
-    },500)
-  }
-  onLayoutResize=()=>{
-    const {rowData} =this.props
-    let top=this.wrapRef.getBoundingClientRect().top+20;
-    let documentHeight= document.documentElement.clientHeight || window.innerHeight;
-    let height= documentHeight-top;
-    if(rowData.length){
+  };
+  onModelUpdated = () => {
+    if (!this.gridApi) return;
+    this.totalSum();
+    setTimeout(() => {
+      this.autoSizeColumns();
+    }, 500);
+  };
+  onLayoutResize = () => {
+    const { rowData } = this.props;
+    let top = this.wrapRef.getBoundingClientRect().top + 20;
+    let documentHeight = document.documentElement.clientHeight || window.innerHeight;
+    let height = documentHeight - top;
+    if (rowData.length) {
       this.setState({
-        height:height<400?400:height
-      })
-    }else{
+        height: height < 400 ? 400 : height,
+      });
+    } else {
       this.setState({
-        height:400
-      })
-    }   
-  }
-  
-  componentWillUpdate(){
-    this.localCol=this.getLocal()
-    this.onLayoutResize()
-    window.onresize=()=>{
-      this.onLayoutResize()
+        height: 400,
+      });
     }
+  };
+
+  componentWillUpdate() {
+    this.localCol = this.getLocal();
+    this.onLayoutResize();
+    window.onresize = () => {
+      this.onLayoutResize();
+    };
   }
 
-  tableWrapRef = ref =>{
-    this.wrapRef=ref
-  }
+  tableWrapRef = ref => {
+    this.wrapRef = ref;
+  };
   onGridReady = params => {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
   };
-  saveLocal=()=>{
-    const colums= this.gridColumnApi.getAllColumns().map(row=>{
-      return{
+  saveLocal = () => {
+    const colums = this.gridColumnApi.getAllColumns().map(row => {
+      return {
         hide: !row.visible,
-        field:row.colId,
-        pinned:row.pinned
+        field: row.colId,
+        pinned: row.pinned,
+      };
+    });
+    localStorage.setItem(location.pathname, JSON.stringify(colums));
+  };
+  getLocal = () => {
+    return JSON.parse(localStorage.getItem(location.pathname) || null);
+  };
+  loopColum = row => {
+    const local = this.localCol;
+    if (row.children) {
+      row.children.map(item => this.loopColum(item));
+    } else {
+      let col = find(local, { field: row.field });
+      if (col) {
+        row.hide = col.hide;
+        row.pinned = col.pinned;
       }
-    })
-    localStorage.setItem(location.pathname,JSON.stringify(colums))
-  }
-  getLocal=()=>{
-    return JSON.parse(localStorage.getItem(location.pathname)||null)
-  }
-  loopColum=(row)=>{
-      const local= this.localCol
-      if(row.children){
-        row.children.map(item=>this.loopColum(item))
-      }else{
-        let col=find(local,{field:row.field})
-        if(col){
-          row.hide=col.hide
-          row.pinned=col.pinned          
-        }
-      }
-      return row
-  }
-  getColumns=()=>{
-    const {columnCus=[]} = this.props
-    return deepCopy(columnCus).map(row=>this.loopColum(row))
-  }
-  selectRow=(key,value)=>{
+    }
+    return row;
+  };
+  getColumns = () => {
+    const { columnCus = [] } = this.props;
+    return deepCopy(columnCus).map(row => this.loopColum(row));
+  };
+  selectRow = (key, value) => {
     this.gridApi.forEachNode(function(node) {
       if (node.data[key] === value) {
         node.setSelected(true);
       }
     });
-  }
+  };
   render() {
-    const { 
-      loading, 
-      hideHeaderBar, 
-      searchBar,
-      gridComponents
-    } = this.props;
-    const columnDefs=this.getColumns()
+    const { loading, hideHeaderBar, searchBar, gridComponents } = this.props;
+    const columnDefs = this.getColumns();
     return (
       <Spin spinning={loading} delay={500}>
         {!hideHeaderBar && (
@@ -207,7 +202,11 @@ class JTable extends PureComponent {
           </Row>
         )}
 
-        <div className="ag-theme-balham" ref={this.tableWrapRef} style={{ height: this.state.height, width: '100%' }}>
+        <div
+          className="ag-theme-balham"
+          ref={this.tableWrapRef}
+          style={{ height: this.state.height, width: '100%' }}
+        >
           <AgGridReact
             enableRangeSelection={true}
             onGridReady={this.onGridReady}
@@ -220,7 +219,7 @@ class JTable extends PureComponent {
             onColumnPinned={this.saveLocal}
             ref={this.tableRef}
             noRowsOverlayComponent="empty"
-            frameworkComponents={{...gridComponents,...this.state.frameworkComponents}}
+            frameworkComponents={{ ...gridComponents, ...this.state.frameworkComponents }}
             {...this.props}
             columnDefs={columnDefs}
           />

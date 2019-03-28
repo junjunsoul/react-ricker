@@ -171,7 +171,7 @@ export const getDemoList = {
       body: params,
     });
   },
-}
+};
 export const queryNotices = {
   title: '通知',
   url: '/api/notices',
