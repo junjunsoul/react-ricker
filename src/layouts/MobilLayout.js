@@ -18,7 +18,9 @@ import logo from '../assets/logo.svg';
 const { Content } = Layout;
 
 @connect(({ menu, user }) => ({
+  documentTitle: global.documentTitle,
   authMenus: user.authMenus,
+  authority: user.authority,
   menuData: menu.menuData,
   breadcrumbNameMap: menu.breadcrumbNameMap,
 }))
@@ -51,10 +53,11 @@ class MobilLayout extends React.PureComponent {
   };
 
   getPageTitle = (pathname, breadcrumbNameMap) => {
+    const { documentTitle } = this.props;
     const currRouterData = this.matchParamsPath(pathname, breadcrumbNameMap);
 
     if (!currRouterData) {
-      return 'Ant Design Pro';
+      return documentTitle;
     }
     const pageName = formatMessage({
       id: currRouterData.locale || currRouterData.name,
@@ -68,7 +71,7 @@ class MobilLayout extends React.PureComponent {
     const {
       children,
       location: { pathname },
-      authMenus,
+      authority,
       breadcrumbNameMap,
       route: { routes },
     } = this.props;
@@ -85,7 +88,7 @@ class MobilLayout extends React.PureComponent {
             <Authorized
               pathname={pathname}
               routes={routes}
-              authMenus={authMenus}
+              authority={authority}
               children={children}
               noMatch={<Exception403 />}
             />

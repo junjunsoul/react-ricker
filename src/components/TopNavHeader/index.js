@@ -16,7 +16,7 @@ export default class TopNavHeader extends PureComponent {
   }
 
   render() {
-    const { theme, contentWidth, logo } = this.props;
+    const { theme, contentWidth, logo, documentTitle } = this.props;
     const { maxWidth } = this.state;
     return (
       <div className={`${styles.head} ${theme === 'light' ? styles.light : ''}`}>
@@ -30,7 +30,7 @@ export default class TopNavHeader extends PureComponent {
             <div className={styles.logo} key="logo" id="logo">
               <Link to="/">
                 <img src={logo} alt="logo" />
-                <h1>Ant Design Pro</h1>
+                <h1>{documentTitle}</h1>
               </Link>
             </div>
             <div

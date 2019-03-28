@@ -183,7 +183,7 @@ export default {
             '/api/test/add',
             '/api/test/list',
             '/api/fake_chart_data',
-            '/api/getRole',
+            // '/api/getRole',
             '/api/roleList',
           ] 
         }

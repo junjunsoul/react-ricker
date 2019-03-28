@@ -1,8 +1,8 @@
 import fetch from 'dva/fetch';
-import { notification } from 'antd';
+import { notification, Modal } from 'antd';
 import router from 'umi/router';
 import hash from 'hash.js';
-import { isAntdPro } from './utils';
+import { isAntdPro, deepCopy } from './utils';
 import Cookies from 'js-cookie';
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -28,7 +28,7 @@ const checkStatus = response => {
   }
   const errortext = codeMessage[response.status] || response.statusText;
   notification.error({
-    message: `请求错误 ${response.status}: ${response.url}`,
+    message: `请求错误 ${response.status}: ${response.url.replace(/http:\/\/([^\/]+)\//i, '/')}`,
     description: errortext,
   });
   const error = new Error(errortext);
@@ -68,12 +68,13 @@ export default function request(url, option) {
     expirys: isAntdPro(),
     ...option,
   };
-  
+
   /**
    * Produce fingerprints based on url and parameters
    * Maybe url has the same parameters
    */
   const fingerprint = url + (options.body ? JSON.stringify(options.body) : '');
+
   const hashcode = hash
     .sha256()
     .update(fingerprint)
@@ -82,7 +83,7 @@ export default function request(url, option) {
   const defaultOptions = {
     credentials: 'include',
   };
-  const newOptions = { ...defaultOptions, ...options};
+  const newOptions = { ...defaultOptions, ...options };
   if (
     newOptions.method === 'POST' ||
     newOptions.method === 'PUT' ||
@@ -121,36 +122,36 @@ export default function request(url, option) {
   }
   return fetch(url, newOptions)
     .then(checkStatus)
-    .then(response => cachedSave(response, hashcode))
+    // .then(response => cachedSave(response, hashcode))
     .then(response => {
       // DELETE and 204 do not return data by default
       // using .json will report an error.
       if (newOptions.method === 'DELETE' || response.status === 204) {
         return response.text();
       }
-      return response.json();
-    })
-    .catch(e => {
-      const status = e.name;
-      if (status === 401) {
-        // @HACK
-        /* eslint-disable no-underscore-dangle */
-        window.g_app._store.dispatch({
-          type: 'login/logout',
-        });
-        return;
-      }
-      // environment should not be used
-      if (status === 403) {
-        router.push('/exception/403');
-        return;
-      }
-      if (status <= 504 && status >= 500) {
-        router.push('/exception/500');
-        return;
-      }
-      if (status >= 404 && status < 422) {
-        router.push('/exception/404');
-      }
+      const result = response.json();
+      deepCopy(result).then(res => {
+        if (res.code) {
+          if (res.code === 10000 && !window.showPast) {
+            window.showPast = true;
+            Modal.error({
+              title: '错误提示',
+              content: '登录信息过期,请重新登录...',
+              onOk: () => {
+                window.showPast = false;
+                window.g_app._store.dispatch({
+                  type: 'login/logout',
+                });
+              },
+            });
+          } else {
+            notification.error({
+              message: `错误码 ${res.code}: ${response.url.replace(/http:\/\/([^\/]+)\//i, '/')}`,
+              description: res.msg,
+            });
+          }
+        }
+      });
+      return result;
     });
 }

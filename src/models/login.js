@@ -1,27 +1,25 @@
 import { routerRedux } from 'dva/router';
 import { stringify } from 'qs';
-import { fakeAccountLogin, getFakeCaptcha } from '@/services/api';
+import { fakeAccountLogin, fakeAccountLoginOut } from '@/services/user';
 import { getPageQuery } from '@/utils/utils';
-import Cookies from 'js-cookie';
 export default {
   namespace: 'login',
 
   state: {
     status: -1,
+    msg: '',
   },
 
   effects: {
-    *login({ payload }, { call, put }) {
+    *login({ payload, callback }, { call, put }) {
       const response = yield call(fakeAccountLogin.req, payload);
+      callback();
       yield put({
         type: 'changeLoginStatus',
         payload: response,
       });
       // Login successfully
       if (!response.code) {
-        const res = response.data || {};
-        Cookies.set('access_token', res.access_token, { expires: res.expires_in / 86400 });
-
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params;
@@ -41,18 +39,14 @@ export default {
       }
     },
 
-    *getCaptcha({ payload }, { call }) {
-      yield call(getFakeCaptcha.req, payload);
-    },
-
-    *logout(_, { put }) {
+    *logout({ payload }, { call, put }) {
+      yield call(fakeAccountLoginOut.req, payload);
       yield put({
         type: 'changeLoginStatus',
         payload: {
-          code: false
+          code: false,
         },
       });
-      Cookies.remove('access_token')
       yield put(
         routerRedux.push({
           pathname: '/user/login',
@@ -69,6 +63,7 @@ export default {
       return {
         ...state,
         status: !payload.code ? 'ok' : 'error',
+        msg: payload.msg,
       };
     },
   },

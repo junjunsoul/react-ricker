@@ -32,27 +32,15 @@ const plugins = [
       ...(!process.env.TEST && os.platform() === 'darwin'
         ? {
             dll: {
-              include: ['dva', 'dva/router', 'dva/saga', 'dva/fetch'],
+              include: ['dva', 'dva/router', 'dva/saga', 'dva/fetch','ag-grid-react'],
               exclude: ['@babel/runtime'],
             },
-            hardSource: true,
+            hardSource: false,
           }
         : {}),
     },
   ],
 ];
-
-// 针对 preview.pro.ant.design 的 GA 统计代码
-// 业务上不需要这个
-
-// if (process.env.APP_TYPE === 'site') {
-//   plugins.push([
-//     'umi-plugin-ga',
-//     {
-//       code: 'UA-72788897-6',
-//     },
-//   ]);
-// }
 
 export default {
   // add for transfer to umi
@@ -73,13 +61,13 @@ export default {
   externals: {
     '@antv/data-set': 'DataSet',
   },
-  // proxy: {
-  //   '/server/api/': {
-  //     target: 'https://preview.pro.ant.design/',
-  //     changeOrigin: true,
-  //     pathRewrite: { '^/server': '' },
-  //   },
-  // },
+  proxy:[
+    {
+      context: ['/captcha', '/admin'],
+      changeOrigin: true,
+      target: 'http://192.168.21.19:8010',
+    }
+  ],
   ignoreMomentLocale: true,
   lessLoaderOptions: {
     javascriptEnabled: true,

@@ -48,27 +48,59 @@
     height: 0;
   }
 }
+:global{
+  .ant-card{
+    font-size: 13px;
+  }
+  .ant-form{
+    font-size: 13px;
+  }
+  .ant-card-head{
+    font-weight: inherit;
+  }
+  .ant-card-body,.ant-modal-body{
+    padding:10px;
+  }
+  .ant-card-wider-padding .ant-card-body{
+    padding:10px;
+  }
+  .ant-form-item-label > label{
+    color: rgba(0, 0, 0, 0.65);
+  }
+  .ant-form label{
+    font-size: 13px;
+  }
+}
 
 // 页面通用样式
 .tableList {
   .tableListOperator {
-    margin-bottom: 16px;
+    padding-bottom: 8px;
     button {
       margin-right: 8px;
     }
   }
 }
-
+.formLayout{
+  :global {
+    .ant-form-item {
+      > .ant-form-item-label {
+        line-height: 26px;
+      }
+    }
+    
+  }
+}
 .tableListForm {
   :global {
     .ant-form-item {
-      margin-bottom: 24px;
+      margin-bottom: 16px;
       margin-right: 0;
       display: flex;
       > .ant-form-item-label {
         width: auto;
         line-height: 32px;
-        padding-right: 8px;
+        padding-right: 4px;
       }
       .ant-form-item-control {
         line-height: 32px;
@@ -81,7 +113,7 @@
   .submitButtons {
     display: block;
     white-space: nowrap;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
   }
 }
 
@@ -96,3 +128,6 @@
     margin-right: 8px;
   }
 }
+
+//ant theme
+@font-size-base: 13px; 

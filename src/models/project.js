@@ -1,4 +1,4 @@
-import { queryProjectNotice } from '@/services/api';
+import { queryProjectNotice,getDemoList } from '@/services/api';
 
 export default {
   namespace: 'project',
@@ -14,6 +14,10 @@ export default {
         type: 'saveNotice',
         payload: Array.isArray(response) ? response : [],
       });
+    },
+    *fetchDemoList({ payload, callback }, { call, put }) {
+      const response = yield call(getDemoList.req, payload);
+      callback(response);
     },
   },
 

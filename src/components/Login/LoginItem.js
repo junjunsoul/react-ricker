@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Input, Button, Row, Col } from 'antd';
+import { Form, Input, Button, Row, Col, Icon } from 'antd';
 import omit from 'omit.js';
 import styles from './index.less';
 import ItemMap from './map';
@@ -112,6 +112,27 @@ class WrapFormItem extends Component {
               >
                 {count ? `${count} ${getCaptchaSecondText}` : getCaptchaButtonText}
               </Button>
+            </Col>
+          </Row>
+        </FormItem>
+      );
+    }
+    if (type === 'CaptchaImg') {
+      const inputProps = omit(otherProps, ['onGetCaptcha', 'countDown', 'imgUrl']);
+      const { imgUrl, onGetCaptcha } = otherProps;
+      return (
+        <FormItem>
+          <Row gutter={8}>
+            <Col span={16}>
+              {getFieldDecorator(name, options)(<Input {...customprops} {...inputProps} />)}
+            </Col>
+            <Col span={8}>
+              <div className={styles.captchaImg}>
+                <img src={imgUrl} />
+                <div className={styles.refresh} onClick={onGetCaptcha}>
+                  <Icon type="redo" />
+                </div>
+              </div>
             </Col>
           </Row>
         </FormItem>

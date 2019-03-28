@@ -8,11 +8,21 @@
         .ag-root{
             border: 1px solid @borderColor;
         }
+        .ag-tab-header{
+            border-bottom: 1px solid @borderColor;
+            .ag-tab.ag-tab-selected{
+                border-color: @borderColor;
+            }
+        }
         .ag-header{
             border-bottom: 1px solid @borderColor;
         }
         .ag-row{
             border-color: @borderColor;
+        }
+        .ag-floating-top {
+            background-color: #f5f7f7;
+            border-bottom: 1px solid @borderColor;
         }
         .ag-status-bar{
             border: 1px solid @borderColor;
@@ -27,6 +37,29 @@
                     border-bottom: 1px solid @borderColor;
                 }
             }
+        }
+        .ag-ltr {
+            .ag-cell-focus {
+                border: 1px solid #0091EA !important;
+            }
+            .ag-row.ag-cell-first-right-pinned, .ag-cell:not(.ag-cell-focus).ag-cell-first-right-pinned{
+                border-left: 1px solid @borderColor;
+            }
+            .ag-row.ag-cell-last-left-pinned, .ag-cell:not(.ag-cell-focus).ag-cell-last-left-pinned {
+                border-right: 1px solid @borderColor;
+            }
+        }
+        .ag-pinned-right-header {
+            border-left: 1px solid @borderColor;
+        }
+        .ag-pinned-left-header {
+            border-left: 1px solid @borderColor;
+        }
+        .ag-pinned-left-header {
+            border-right: 1px solid @borderColor;
+        }
+        .ag-header-row{
+            border-color: @borderColor;
         }
         .ag-menu{
             .ag-menu-separator{
@@ -65,7 +98,7 @@
                 margin-right: 4px;                
             }
         }
-        .ag-theme-balham .ag-menu, .ag-theme-balham .ag-theme-balham.ag-dnd-ghost, .ag-theme-balham .ag-cell-inline-editing, .ag-theme-balham .ag-popup-editor, .ag-theme-balham .ag-select-agg-func-popup, .ag-theme-balham .ag-overlay-loading-center{
+        .ag-menu, .ag-dnd-ghost, .ag-cell-inline-editing, .ag-popup-editor, .ag-select-agg-func-popup,  .ag-overlay-loading-center{
             border: 1px solid @borderColor;
         }
     }    

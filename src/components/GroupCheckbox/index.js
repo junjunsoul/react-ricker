@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Checkbox, Divider } from 'antd';
+import { Checkbox, Divider, Row, Col } from 'antd';
 const CheckboxGroup = Checkbox.Group;
 
 class GroupCheckbox extends PureComponent {
@@ -15,7 +15,7 @@ class GroupCheckbox extends PureComponent {
     onChange(checkeds);
   };
   onCheckAllChange = e => {
-    let { options, checkedList } = this.props;
+    let { options, checkedList=[] } = this.props;
     const values = options.map(item => item.value);
     let arr = [];
     if (e.target.checked) {
@@ -35,7 +35,7 @@ class GroupCheckbox extends PureComponent {
     this.onChange(arr);
   };
   checkAllHandle = () => {
-    const { checkedList, options } = this.props;
+    const { checkedList=[], options } = this.props;
     const values = options.map(item => item.value);
     let arr = [];
     values.forEach(item => {
@@ -55,10 +55,10 @@ class GroupCheckbox extends PureComponent {
     this.checkAllHandle();
   }
   render() {
-    const { checkedList, options, checkAllLabel } = this.props;
+    const { checkedList=[], options, checkAllLabel, colNum = 2 } = this.props;
     return (
       <div>
-        <Divider orientation="left">
+        <Divider orientation="left" style={{ margin: '5px 0' }}>
           <Checkbox
             indeterminate={this.state.indeterminate}
             onChange={this.onCheckAllChange}
@@ -68,7 +68,19 @@ class GroupCheckbox extends PureComponent {
           </Checkbox>
         </Divider>
 
-        <CheckboxGroup options={options} value={checkedList} onChange={this.onChange} />
+        <CheckboxGroup value={checkedList} onChange={this.onChange} style={{ width: '100%' }}>
+          {
+            <Row>
+              {options.map((row, index) => {
+                return (
+                  <Col span={24 / colNum} key={index}>
+                    <Checkbox value={row.value}>{row.label}</Checkbox>
+                  </Col>
+                );
+              })}
+            </Row>
+          }
+        </CheckboxGroup>
       </div>
     );
   }

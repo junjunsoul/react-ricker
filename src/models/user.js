@@ -1,5 +1,4 @@
-import { query as queryUsers, queryCurrent } from '@/services/user';
-import { getMenuData } from '@/services/s1';
+import { modifyPassword, queryCurrent } from '@/services/user';
 import { getAuthMenus } from '@/authorize/utils';
 export default {
   namespace: 'user',
@@ -7,69 +6,43 @@ export default {
   state: {
     list: [],
     currentUser: {},
-    port: [],
+    authority: [],
     authMenus: [],
-    isLoad: true,
   },
 
   effects: {
-    *fetch(_, { call, put }) {
-      const response = yield call(queryUsers.req);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-    },
-    *fetchCurrent(_, { call, put }) {
+    *fetchCurrent(
+      {
+        payload: { routes },
+      },
+      { call, put }
+    ) {
       const response = yield call(queryCurrent.req);
-      yield put({
-        type: 'saveCurrentUser',
-        payload: response,
-      });
-    },
-    *fetchMenuData({ payload }, { call, put }) {
-      const response = yield call(getMenuData.req);
       if (!response.code) {
+        const data = response.data;
         yield put({
-          type: 'saveMenuData',
+          type: 'saveCurrentUser',
           payload: {
-            port: response.data,
-            authMenus: getAuthMenus(payload.routes, response.data),
+            data,
+            authority: data.role_menus,
+            authMenus: getAuthMenus(routes, data.role_menus),
           },
         });
       }
     },
+    *modifyPassword({ payload, callback }, { call, put }) {
+      const response = yield call(modifyPassword.req, payload);
+      callback(response);
+    },
   },
 
   reducers: {
-    save(state, action) {
-      return {
-        ...state,
-        list: action.payload,
-      };
-    },
     saveCurrentUser(state, action) {
+      const { data, authority, authMenus } = action.payload;
       return {
         ...state,
-        currentUser: action.payload || {},
-      };
-    },
-    changeNotifyCount(state, action) {
-      return {
-        ...state,
-        currentUser: {
-          ...state.currentUser,
-          notifyCount: action.payload.totalCount,
-          unreadCount: action.payload.unreadCount,
-        },
-      };
-    },
-    saveMenuData(state, action) {
-      const { port, authMenus } = action.payload;
-      return {
-        ...state,
-        isLoad: false,
-        port: port || [],
+        currentUser: data || {},
+        authority: authority || [],
         authMenus: authMenus || [],
       };
     },

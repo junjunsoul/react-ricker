@@ -94,7 +94,11 @@ class Analysis extends Component {
 
   render() {
     const { rangePickerValue, salesType, currentTabKey } = this.state;
-    const { chart, loading } = this.props;
+    const {
+      chart,
+      loading,
+      route: { authorized },
+    } = this.props;
     const {
       visitData,
       visitData2,
@@ -112,6 +116,7 @@ class Analysis extends Component {
     } else {
       salesPieData = salesType === 'online' ? salesTypeDataOnline : salesTypeDataOffline;
     }
+    console.log(authorized);
     const menu = (
       <Menu>
         <Menu.Item>操作一</Menu.Item>

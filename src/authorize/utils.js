@@ -1,9 +1,11 @@
-import { handleChip } from './index';
-
+import { checkAuth } from './functionModule';
 // Conversion router to menu.
 function formatter(data) {
   return data
     .map(item => {
+      if (!item.name || !item.path) {
+        return null;
+      }
       const result = {
         ...item,
       };
@@ -19,26 +21,7 @@ function formatter(data) {
 }
 //检查权限
 function check(authority, item) {
-  item.available = true;
-  if (item.authChip) {
-    let authChip = {};
-
-    item.authChip.forEach(chipName => {
-      authChip[chipName] = handleChip(chipName, authority);
-    });
-    item.authChip = authChip;
-
-    //检查最小可见权限
-    if (item.miniDepend) {
-      item.miniDepend.forEach(chipName => {
-        if (authChip[chipName]) {
-          if (!authChip[chipName].available) item.available = false;
-        } else {
-          throw new Error(`${item.name}-最小可见权限配置错误-${chipName}`);
-        }
-      });
-    }
-  }
+  item.available = checkAuth(item.path, authority);
   if (!item.children) {
     checkParent(item, item.available);
   }

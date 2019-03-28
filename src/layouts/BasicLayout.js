@@ -4,9 +4,10 @@ import Media from 'react-media';
 import PageLoading from '@/components/PageLoading';
 import MobilLayout from './MobilLayout';
 import PcLayout from './PcLayout';
+import { isEmpty } from 'lodash';
 
-@connect(({ user }) => ({
-  isLoad: user.isLoad,
+@connect(({ user: { currentUser }, loading }) => ({
+  currentUser,
 }))
 class BasicLayout extends React.PureComponent {
   componentDidMount() {
@@ -17,17 +18,10 @@ class BasicLayout extends React.PureComponent {
 
     dispatch({
       type: 'user/fetchCurrent',
+      payload: { routes },
     });
     dispatch({
       type: 'setting/getSetting',
-    });
-    dispatch({
-      type: 'global/saveAllRoute',
-      payload: routes,
-    });
-    dispatch({
-      type: 'user/fetchMenuData',
-      payload: { routes },
     });
   }
   //更新设备类型
@@ -40,8 +34,8 @@ class BasicLayout extends React.PureComponent {
   }
 
   render() {
-    const { isLoad } = this.props;
-    if (isLoad) {
+    const { currentUser } = this.props;
+    if (isEmpty(currentUser)) {
       return <PageLoading />;
     } else {
       return (

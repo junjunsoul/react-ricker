@@ -6,7 +6,6 @@ import isEqual from 'lodash/isEqual';
 import memoizeOne from 'memoize-one';
 import pathToRegexp from 'path-to-regexp';
 import { formatMessage } from 'umi/locale';
-import { handleChipforRoute } from '@/authorize';
 import Authorized from '@/utils/Authorized';
 import logo from '../assets/logo.svg';
 import Footer from './Footer';
@@ -18,11 +17,11 @@ import styles from './PcLayout.less';
 const { Content } = Layout;
 
 @connect(({ global, setting, menu, user }) => ({
-  collapsed: global.collapsed,
+  documentTitle: global.documentTitle,
   layout: setting.layout,
   authMenus: user.authMenus,
-  portArr: user.port,
   menuData: menu.menuData,
+  authority: user.authority,
   breadcrumbNameMap: menu.breadcrumbNameMap,
   ...setting,
 }))
@@ -37,11 +36,7 @@ class PcLayout extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { dispatch, authMenus, route, portArr } = this.props;
-
-    //手动获取页面权限
-    handleChipforRoute(route, portArr);
-
+    const { dispatch, authMenus } = this.props;
     //初始化菜单
     dispatch({
       type: 'menu/getMenuData',
@@ -63,27 +58,18 @@ class PcLayout extends React.PureComponent {
   };
 
   getPageTitle = (pathname, breadcrumbNameMap) => {
+    const { documentTitle } = this.props;
     const currRouterData = this.matchParamsPath(pathname, breadcrumbNameMap);
 
     if (!currRouterData) {
-      return 'Ant Design Pro';
+      return documentTitle;
     }
     const pageName = formatMessage({
       id: currRouterData.locale || currRouterData.name,
       defaultMessage: currRouterData.name,
     });
 
-    return `${pageName} - Ant Design Pro`;
-  };
-
-  getLayoutStyle = () => {
-    const { fixSiderbar, isMobile, collapsed, layout } = this.props;
-    if (fixSiderbar && layout !== 'topmenu' && !isMobile) {
-      return {
-        paddingLeft: collapsed ? '80px' : '256px',
-      };
-    }
-    return null;
+    return `${pageName} - ${documentTitle}`;
   };
 
   render() {
@@ -92,16 +78,16 @@ class PcLayout extends React.PureComponent {
       location: { pathname },
       isMobile,
       menuData,
-      authMenus,
       breadcrumbNameMap,
+      authority,
       route: { routes },
       fixedHeader,
     } = this.props;
     const contentStyle = !fixedHeader ? { paddingTop: 0 } : {};
+
     const layout = (
       <Layout
         style={{
-          ...this.getLayoutStyle(),
           minHeight: '100vh',
         }}
       >
@@ -110,7 +96,7 @@ class PcLayout extends React.PureComponent {
           <Authorized
             pathname={pathname}
             routes={routes}
-            authMenus={authMenus}
+            authority={authority}
             children={children}
             noMatch={<Exception403 />}
           />

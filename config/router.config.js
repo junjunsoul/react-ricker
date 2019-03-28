@@ -1,5 +1,3 @@
-// authChip 权限碎片
-// miniDepend 最小权限依赖
 // hideChildrenInMenu 用于隐藏不需要在菜单中展示的子路由。用法可以查看 分步表单 的配置。
 // hideInMenu 可以在菜单中不展示这个路由，包括子路由。效果可以查看 exception/trigger页面。
 // 最多显示三级菜单
@@ -10,9 +8,7 @@ export default [
     component: '../layouts/UserLayout',
     routes: [
       { path: '/user', redirect: '/user/login' },
-      { path: '/user/login', component: './User/Login' },
-      { path: '/user/register', component: './User/Register' },
-      { path: '/user/register-result', component: './User/RegisterResult' },
+      { path: '/user/login', component: './User/Login' }
     ],
   },
 
@@ -31,18 +27,14 @@ export default [
           {
             path: '/dashboard/analysis',
             name: 'analysis',
-            authChip: ['report.analysis_charts'],
-            miniDepend: ['report.analysis_charts'],
             component: './Dashboard/Analysis',
           },
           {
             path: '/dashboard/monitor',
             name: 'monitor',
-            
-            authChip:['report.monitor_tag'],
-            miniDepend:['report.monitor_tag'],
             component: './Dashboard/Monitor',
           },
+          
           {
             path: '/dashboard/workplace',
             name: 'workplace',
@@ -56,8 +48,6 @@ export default [
         name: 'mobil',
         routes: [
           {
-            authChip: ['test.test_list', 'test.test_add'],
-            miniDepend: ['test.test_list'],
             isMobile: true,
             path: '/mobil/test',
             name: 'test',
@@ -229,29 +219,6 @@ export default [
         hideInMenu : true,
         routes: [
           {
-            path: '/account/center',
-            name: 'center',
-            component: './Account/Center/Center',
-            routes: [
-              {
-                path: '/account/center',
-                redirect: '/account/center/articles',
-              },
-              {
-                path: '/account/center/articles',
-                component: './Account/Center/Articles',
-              },
-              {
-                path: '/account/center/applications',
-                component: './Account/Center/Applications',
-              },
-              {
-                path: '/account/center/projects',
-                component: './Account/Center/Projects',
-              },
-            ],
-          },
-          {
             path: '/account/settings',
             name: 'settings',
             component: './Account/Settings/Info',
@@ -263,19 +230,7 @@ export default [
               {
                 path: '/account/settings/base',
                 component: './Account/Settings/BaseView',
-              },
-              {
-                path: '/account/settings/security',
-                component: './Account/Settings/SecurityView',
-              },
-              {
-                path: '/account/settings/binding',
-                component: './Account/Settings/BindingView',
-              },
-              {
-                path: '/account/settings/notification',
-                component: './Account/Settings/NotificationView',
-              },
+              }
             ],
           },
         ],
@@ -286,17 +241,42 @@ export default [
         path: '/system',
         routes:[
           {
+            path: '/system/userManage',
+            name: 'usermanage',
+            component: './System/userManage',
+          },
+          {
             path: '/system/role',
             name: 'role',
-            authChip:['system.role_auth'],
-            miniDepend:['system.role_auth'],
             component: './System/role',
           },
           {
-            path: '/system/interface-list',
-            name: 'interfacelist',
-            component: './System/interfaceList'
+            path: '/system/ifPage',
+            name: 'ifpage',
+            component: './System/ifPage',
+            routes: [
+              {
+                path: '/system/ifPage',
+                redirect: '/system/ifPage/interface-list',
+              },
+              {
+                path: '/system/ifPage/interface-list',
+                name: 'interfacelist',
+                component: './System/interfaceList'
+              },
+              {
+                path: '/system/ifPage/interface-report',
+                name: 'interfacereport',
+                component: './System/interfaceReport'
+              },              
+            ]
           },
+          {
+            path: '/system/access-log',
+            name: 'accesslog',
+            component: './System/accessLog'
+          },
+
           {
             path: '/system/layout-demo',
             name: 'layoutdemo',

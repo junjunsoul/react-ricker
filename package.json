@@ -8,11 +8,7 @@
     "start:no-mock": "cross-env MOCK=none umi dev",
     "build": "umi build",
     "prettier": "node ./scripts/prettier.js",
-    "analyze": "cross-env ANALYZE=1 umi build",
-    "docker:dev": "docker-compose -f ./docker/docker-compose.dev.yml up",
-    "docker:build": "docker-compose -f ./docker/docker-compose.dev.yml build",
-    "docker-prod:dev": "docker-compose -f ./docker/docker-compose.yml up",
-    "docker-prod:build": "docker-compose -f ./docker/docker-compose.yml build"
+    "analyze": "cross-env ANALYZE=1 umi build"
   },
   "dependencies": {
     "@antv/data-set": "^0.10.0",
@@ -49,8 +45,9 @@
     "react-document-title": "^2.0.3",
     "react-dom": "^16.6.3",
     "react-fittext": "^1.0.0",
+    "react-json-view": "^1.19.1",
     "react-media": "^1.8.0",
-    "react-router-dom": "^4.3.1"
+    "react-router-dom": "4.3.1"
   },
   "devDependencies": {
     "@types/react": "^16.7.7",
@@ -83,9 +80,9 @@
     "tslint": "^5.10.0",
     "tslint-config-prettier": "^1.10.0",
     "tslint-react": "^3.6.0",
-    "umi": "^2.3.1",
+    "umi": "^2.4.4",
     "umi-plugin-ga": "^1.1.3",
-    "umi-plugin-react": "^1.2.0"
+    "umi-plugin-react": "^1.4.2"
   },
   "engines": {
     "node": ">=8.0.0"

@@ -1,21 +1,23 @@
 import React, { PureComponent } from 'react';
 import classNames from 'classnames/bind';
 import styles from './index.less';
-import moment from 'moment';
 import 'ag-grid-enterprise';
 import { AgGridReact } from 'ag-grid-react';
-import {find,isEmpty} from 'lodash'
-import { Row, Col, Empty, Input, Button, Spin } from 'antd';
-import {deepCopy,totalHandle} from '@/utils/utils'
-const Search = Input.Search;
-class JTable extends PureComponent {
+import {find} from 'lodash'
+import { Empty, Spin } from 'antd';
+import {deepCopy} from '@/utils/utils'
+class ServerTable extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       frameworkComponents:{
-        empty:() => <Empty/>
+        empty:() => <Empty/>,
+        loadingCellRenderer:(params) => params.value?params.value:<Spin size="small" />,
       },
       rowSelection: 'multiple',
+      rowModelType: "infinite",
+      paginationPageSize: 30,
+      infiniteInitialRowCount: 1,
       //列设置
       defaultColDef: {
         enableValue: true,
@@ -24,10 +26,6 @@ class JTable extends PureComponent {
         sortable: true,
         resizable: true,
         filter: false,
-        // icons: {
-        //     sortAscending: '<i class="fa fa-sort-alpha-asc"/>',
-        //     sortDescending: '<i class="fa fa-sort-alpha-desc"/>'
-        // },
         menuTabs: ['generalMenuTab', 'filterMenuTab'],
       },
       //侧边状态栏
@@ -55,10 +53,10 @@ class JTable extends PureComponent {
       //底部状态拦
       statusBar: {
         statusPanels: [
-          {
-            statusPanel: 'agTotalRowCountComponent',
-            align: 'left',
-          },
+        //   {
+        //     statusPanel: 'agTotalRowCountComponent',
+        //     align: 'left',
+        //   },
           { statusPanel: 'agFilteredRowCountComponent' },
           { statusPanel: 'agSelectedRowCountComponent' },
           { statusPanel: 'agAggregationComponent' },
@@ -66,32 +64,8 @@ class JTable extends PureComponent {
       },
       height:400
     };
-    this.localCol=this.getLocal()
+    this.localCol= this.getLocal()
     this.tableRef = React.createRef();
-  }
-  onBtExport() {
-    this.gridApi.exportDataAsExcel({
-      fileName: (this.props.fileName || '') + moment().format('YYYYMMDD'),
-    });
-  }
-  quickFilter=(value)=> {
-    this.gridApi.setQuickFilter(value.trim());
-  }
-  totalSum=()=>{
-    const {columnCus,totalNextTick} = this.props
-    let dataList=[]
-    this.gridApi.forEachNodeAfterFilter((node)=>{
-      dataList.push(node.data)
-    })
-    let total=totalHandle(dataList,columnCus)
-    if(isEmpty(total))return
-    if(totalNextTick){
-      totalNextTick(total,(data)=>{
-        this.gridApi.setPinnedTopRowData([data])
-      })
-    }else{
-      this.gridApi.setPinnedTopRowData([total])
-    }
   }
   autoSizeColumns=()=>{
     // params.api.sizeColumnsToFit();
@@ -103,13 +77,12 @@ class JTable extends PureComponent {
   }
   onModelUpdated=()=>{
     if(!this.gridApi)return
-    this.totalSum()
     setTimeout(()=>{
       this.autoSizeColumns()
     },500)
   }
   onLayoutResize=()=>{
-    const {rowData} =this.props
+    const {rowData=[]} =this.props
     let top=this.wrapRef.getBoundingClientRect().top+20;
     let documentHeight= document.documentElement.clientHeight || window.innerHeight;
     let height= documentHeight-top;
@@ -138,6 +111,10 @@ class JTable extends PureComponent {
   onGridReady = params => {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
+    const {loadReady} = this.props
+    if(loadReady){
+        loadReady(params)
+    }
   };
   saveLocal=()=>{
     const colums= this.gridColumnApi.getAllColumns().map(row=>{
@@ -178,35 +155,11 @@ class JTable extends PureComponent {
   }
   render() {
     const { 
-      loading, 
-      hideHeaderBar, 
-      searchBar,
+      loading,
       gridComponents
     } = this.props;
     const columnDefs=this.getColumns()
     return (
-      <Spin spinning={loading} delay={500}>
-        {!hideHeaderBar && (
-          <Row gutter={16}>
-            <Col md={18} sm={24}>
-              {searchBar}
-            </Col>
-            <Col md={6} sm={24}>
-              <Row style={{ paddingBottom: '8px' }}>
-                <Col span={20}>
-                  <Search
-                    placeholder="在表格中搜索..."
-                    onChange={e => this.quickFilter(e.target.value)}
-                  />
-                </Col>
-                <Col span={4} style={{ textAlign: 'right' }}>
-                  <Button type="dashed" onClick={() => this.onBtExport()} icon="download" />
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-        )}
-
         <div className="ag-theme-balham" ref={this.tableWrapRef} style={{ height: this.state.height, width: '100%' }}>
           <AgGridReact
             enableRangeSelection={true}
@@ -221,12 +174,18 @@ class JTable extends PureComponent {
             ref={this.tableRef}
             noRowsOverlayComponent="empty"
             frameworkComponents={{...gridComponents,...this.state.frameworkComponents}}
+            debug={true}
+            rowModelType={this.state.rowModelType}
+            paginationPageSize={this.state.paginationPageSize}
+            pagination={true}
+            infiniteInitialRowCount={this.state.infiniteInitialRowCount}
+            
             {...this.props}
             columnDefs={columnDefs}
           />
         </div>
-      </Spin>
+
     );
   }
 }
-export default JTable;
+export default ServerTable;

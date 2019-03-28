@@ -14,249 +14,178 @@ import {
   Input,
   InputNumber,
   DatePicker,
+  Radio
 } from 'antd';
-import styles from './layoutDemo.less';
+import numeral from 'numeral'
+import styles from './index.less';
 import JTable from '@/components/JTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import DataSelect from '@/components/DataSelect'
 const FormItem = Form.Item;
 const { Option } = Select;
-@connect(({ system, loading }) => ({
-  system,
-  loading: loading.models.system,
-}))
-@Form.create()
-class FormLayout extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      modalVisible: false,
-      formValues: {},
-    };
-  }
-  add = () => {
-    this.setState({
-      title: '新增',
-      modalVisible: true,
-      formValues: {
-        role_name: '',
-      },
-    });
-  };
-  edit = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'system/fetchRoleInfo',
-      callback: response => {
-        if (!response.code) {
-          const {
-            data,
-            data: { authPaths },
-          } = response;
-          this.setState({
-            title: '修改',
-            modalVisible: true,
-            formValues: data,
-          });
-        }
-      },
-    });
-  };
-  okHandle = () => {
-    const { form } = this.props;
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-      form.resetFields();
-      let result = { ...fieldsValue };
-      console.log(result);
-      this.onCancel();
-    });
-  };
-  onCancel = () => {
-    this.setState({
-      modalVisible: false,
-    });
-  };
-  onChange = checkedList => {
-    this.setState({
-      checkedList,
-    });
-  };
-  render() {
-    const { form, pageName } = this.props;
-    return (
-      <Modal
-        destroyOnClose
-        title={`${this.state.title}${pageName}`}
-        width={600}
-        size="small"
-        visible={this.state.modalVisible}
-        onOk={this.okHandle}
-        onCancel={() => this.onCancel()}
-      >
-        <FormItem labelCol={{ span: 3 }} wrapperCol={{ span: 21 }} label="角色名称">
-          {form.getFieldDecorator('role_name', {
-            initialValue: this.state.formValues.role_name,
-            rules: [{ required: true, message: '请输入至少五个以上字符！', min: 2 }],
-          })(<Input placeholder="请输入" />)}
-        </FormItem>
-      </Modal>
-    );
-  }
-}
+const InputGroup = Input.Group;
+const RadioGroup = Radio.Group;
 
+// numeral.zeroFormat('N/A');
+numeral.nullFormat('N/A');
+@connect(({ loading }) => ({
+  loading: loading.models.role,
+}))
 @Form.create()
 class SearchForm extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      expandForm: false,
+      flowState:'0'
     };
   }
 
   handleSearch = e => {
     e.preventDefault();
-
     const { tableReload, form } = this.props;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       tableReload(fieldsValue);
     });
   };
-
-  handleFormReset = () => {
-    const { form, tableReload } = this.props;
-    form.resetFields();
-    tableReload({});
-  };
-
-  toggleForm = () => {
-    const { expandForm } = this.state;
+  flowChagne=(val)=>{
     this.setState({
-      expandForm: !expandForm,
-    });
-  };
-
-  renderSimpleForm() {
+      flowState:val
+    })
+  }
+  render() {
     const {
       form: { getFieldDecorator },
     } = this.props;
+    const {flowState}= this.state
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
-            <FormItem label="规则名称">
-              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="使用状态">
-              {getFieldDecorator('status')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">关闭</Option>
-                  <Option value="1">运行中</Option>
+            <FormItem label="时间维度">
+              <InputGroup compact>
+                <Select defaultValue="0">
+                  <Option value="0">不限</Option>
+                  <Option value="1">小时</Option>                  
+                  <Option value="2">日期</Option>
                 </Select>
-              )}
+                <DatePicker style={{ width: '50%' }} />
+              </InputGroup>
             </FormItem>
           </Col>
-          <Col md={8} sm={24}>
-            <span className={styles.submitButtons}>
-              <Button type="primary" htmlType="submit">
+          <Col md={10} sm={24}>
+            <FormItem label="流量类型">
+                <Select defaultValue="0" onChange={this.flowChagne} style={{width:100}}>
+                  <Option value="2">总量</Option>
+                  <Option value="1">推广量</Option>
+                  <Option value="0">自然量</Option>
+                </Select>
+                <RadioGroup name="radiogroup" defaultValue={1} style={{marginLeft:8}}>
+                  <Radio value={1}>总量</Radio>
+                  <Radio value={2}>推广量</Radio>
+                  <Radio value={3}>自然量</Radio>
+                </RadioGroup>                  
+            </FormItem>
+          </Col>
+          <Col md={6} sm={24} style={{lineHeight:'40px'}}>
+            <Button type="primary" htmlType="submit">
                 查询
-              </Button>
-              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
-                重置
-              </Button>
-              <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
-                展开 <Icon type="down" />
-              </a>
-            </span>
+            </Button>
           </Col>
         </Row>
+        {
+          flowState=='1'?<Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+          <Col span={18}>
+            <div style={{display:'flex',marginTop:'8px'}}>
+              <div style={{width:'65px'}}>数据范围：</div>
+              <div style={{flex:'1'}}>
+                <DataRang/>
+              </div>
+            </div>
+          </Col>
+        </Row>:null
+        }
+
       </Form>
     );
   }
-
-  renderAdvancedForm() {
-    const {
-      form: { getFieldDecorator },
-    } = this.props;
-    return (
-      <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={8} sm={24}>
-            <FormItem label="规则名称">
-              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="使用状态">
-              {getFieldDecorator('status')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">关闭</Option>
-                  <Option value="1">运行中</Option>
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="调用次数">
-              {getFieldDecorator('number')(<InputNumber style={{ width: '100%' }} />)}
-            </FormItem>
-          </Col>
-        </Row>
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={8} sm={24}>
-            <FormItem label="更新日期">
-              {getFieldDecorator('date')(
-                <DatePicker style={{ width: '100%' }} placeholder="请输入更新日期" />
-              )}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="使用状态">
-              {getFieldDecorator('status3')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">关闭</Option>
-                  <Option value="1">运行中</Option>
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="使用状态">
-              {getFieldDecorator('status4')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">关闭</Option>
-                  <Option value="1">运行中</Option>
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-        </Row>
-        <div style={{ overflow: 'hidden' }}>
-          <div style={{ float: 'right', marginBottom: 24 }}>
-            <Button type="primary" htmlType="submit">
-              查询
-            </Button>
-            <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
-              重置
-            </Button>
-            <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
-              收起 <Icon type="up" />
-            </a>
+}
+class DataRang extends PureComponent{
+  constructor(props){
+    super(props)
+    this.state={
+      planList:[]
+    }
+  }
+  planCheck=(planList)=>{
+    this.setState({
+      planList
+    })
+  }
+  render(){
+    const list=[
+      {label:'今日头条',value:'0001'},
+      {label:'广点通',value:'0002'},
+      {label:'小程序',value:'0003'},
+      {label:'qq小游戏',value:'0004'},
+      {label:'UC',value:'0005'},
+    ]
+    const list1=[
+      {label:'头条深度sdk',value:'0001'},
+      {label:'头条-深度sdk首充回调',value:'0002'},
+      {label:'头条-不回调',value:'0003'},
+    ]
+    const list2=[
+      {label:'广告组1',value:'0001'},
+      {label:'广告组2',value:'0002'},
+      {label:'广告组3',value:'0003'},
+      {label:'广告组4',value:'0004'}
+    ]
+    const list3=[
+      {label:'广告计划1',value:'0001'},
+      {label:'广告计划2',value:'0002'},
+      {label:'广告计划3',value:'0003'},
+      {label:'广告计划4',value:'0004'},
+    ]
+    const {planList} = this.state
+    return(
+      <Card 
+        title={
+          <RadioGroup defaultValue="a" size="small">
+            <Radio value="a">汇总</Radio>
+            <Radio value="b">广告渠道</Radio>
+            <Radio value="c">投放渠道</Radio>
+            <Radio value="d">投放用户</Radio>
+            <Radio value="e">投放账号</Radio>
+            <Radio value="f">广告组</Radio>
+            <Radio value="g">广告计划</Radio>
+            <Radio value="h">广告创意</Radio>
+          </RadioGroup>
+        }
+        bodyStyle={{padding:0}}
+        size="small">
+        <div style={{display:'flex',height:'200px'}}>
+          <div style={{flex:'1',overflow: 'hidden',borderRight:'1px solid #e8e8e8'}}>
+            <DataSelect list={list} title='渠道'/>
+          </div>
+          <div style={{flex:'1',overflow: 'hidden',borderRight:'1px solid #e8e8e8'}}>
+            <DataSelect list={list1} title='投放渠道'/>
+          </div>
+          <div style={{flex:'1',overflow: 'hidden',borderRight:'1px solid #e8e8e8'}}>
+            <DataSelect list={list2} title='广告组'/>
+          </div>
+          <div style={{flex:'2'}}>
+            <DataSelect 
+              list={list3}
+              colNum={2} 
+              title='广告计划'
+              onCheck={this.planCheck}
+              checkedList={planList}
+              isCheck={true}/>
           </div>
         </div>
-      </Form>
-    );
-  }
-
-  render() {
-    const { expandForm } = this.state;
-    return (
-      <div className={styles.tableListForm}>
-        {expandForm ? this.renderAdvancedForm() : this.renderSimpleForm()}
-      </div>
-    );
+      </Card>
+    )
   }
 }
 const actionRenderer = props => {
@@ -276,9 +205,8 @@ const actionRenderer = props => {
     </Fragment>
   );
 };
-@connect(({ system, loading }) => ({
-  system,
-  loading: loading.models.system,
+@connect(({ loading }) => ({
+  loading: loading.effects['project/fetchDemoList'],
 }))
 class LayoutDemo extends PureComponent {
   constructor(props) {
@@ -286,14 +214,309 @@ class LayoutDemo extends PureComponent {
     this.state = {
       pageName: '页面Demo',
       tableList: [],
-      frameworkComponents: {
+      gridComponents: {
         actionRenderer,
       },
-      columnDefs: [
-        { headerName: '角色名称', field: 'role_name' },
-        { headerName: '创建时间', field: 'create_time' },
-        { headerName: '修改人', field: 'create' },
-        { headerName: '操作', field: 'action', width: 100, cellRenderer: 'actionRenderer' },
+      columnCus: [
+        {
+            headerName:'默认项',
+            children:[
+                {
+                    headerName:"广告渠道",
+                    pinned: 'left',
+                    field:"adv_channel_name",
+                },
+                {
+                    headerName:"投放渠道",
+                    pinned: 'left',
+                    field:"put_adv_channel_name",
+                }
+            ]
+        },
+        {
+            headerName:'基础项',
+            children:[
+                {
+                    headerName:"推广费用(元)",
+                    field:"stat_cost",
+                    total:true,
+                    valueFormatter:params=>numeral(params.value).format('0.00')
+                },
+                {
+                    headerName:"实际推广费(元)",
+                    field:"actual_money",
+                    total:true,
+                    valueFormatter:params=>numeral(params.value).format('0.00')
+                }
+            ]
+        },
+        {
+            headerName:'核心项',
+            children:[
+                {
+                    headerName:"展示数",
+                    field:"show",
+                    total:true,
+                },
+                {
+                    headerName:"点击数",
+                    field:"click",
+                    total:true,
+                },
+                {
+                    headerName:"激活数",
+                    field:"activation",
+                    total:true,
+                },
+                {
+                    headerName:"注册数",
+                    field:"register_users",
+                    total:true,
+                },
+                {
+                    headerName:"活跃人数",
+                    field:"login_users",
+                    total:true,
+                },
+                {
+                    headerName:"付费人数",
+                    field:"recharge_users",
+                    total:true,
+                },
+                {
+                    headerName:"付费次数",
+                    field:"recharge_times",
+                    total:true,
+                },
+                {
+                    headerName:"总充值",
+                    field:"recharge",
+                    total:true,
+                },
+                {
+                    headerName:"回调设备数",
+                    field:"callback_device",
+                    total:true,
+                },
+                {
+                    headerName:"注册单价",
+                    field:"avg_register_price",
+                    total:true,
+                    valueFormatter:params=>numeral(params.value).format('0.00')
+                },
+                {
+                    headerName:"流水roi",
+                    field:"roi",
+                    valueFormatter:params=>numeral(params.value).format('0%')
+                },
+                {
+                    headerName:"arppu",
+                    field:"arppu",
+                    total:true,
+                    valueFormatter:params=>numeral(params.value).format('0.00')
+                },
+                {
+                    headerName:"arpu",
+                    field:"arpu",
+                    total:true,
+                    valueFormatter:params=>numeral(params.value).format('0.00')
+                },
+                {
+                    headerName:"新用户付费率",
+                    field:"new_pay_user_rate",
+                    valueFormatter:params=>numeral(params.value).format('0%')
+                }
+            ]
+        },
+        {
+            headerName:'自定义事件',
+            children:[
+                {
+                    headerName:"创建角色次数",
+                    hide: true,
+                    field:"event_createrole_times",
+                    total:true,
+                },
+                {
+                    headerName:"创建角色人数",
+                    hide: true,
+                    field:"event_createrole_users",
+                    total:true,
+                },
+                {
+                    headerName:"授权次数",
+                    hide: true,
+                    field:"event_authorize_times",
+                    total:true,
+                },
+                {
+                    headerName:"授权人数",
+                    hide: true,
+                    field:"event_authorize_users",
+                    total:true,
+                }
+            ]
+        },
+        {
+            headerName:'推广选项',
+            children:[
+                {
+                    headerName:"首日付费次数",
+                    hide: true,
+                    field:"first_day_recharge_times",
+                    total:true,
+                },
+                {
+                    headerName:"首日付费人数",
+                    hide: true,
+                    field:"first_day_recharge_users",
+                    total:true,
+                },
+                {
+                    headerName:"首日付费金额",
+                    hide: true,
+                    field:"first_day_recharge_amount",
+                    total:true,
+                },
+                {
+                    headerName:"首日ROI",
+                    hide: true,
+                    field:"first_day_roi",
+                    valueFormatter:params=>numeral(params.value).format('0%')
+                }
+            ]
+        },
+        {
+            headerName:'单日回款',
+            children:[
+                {
+                    headerName:"1日付款人数",
+                    hide: true,
+                    field:"recovery_users_1",
+                    total:true,
+                },
+                {
+                    headerName:"1日付款次数",
+                    hide: true,
+                    field:"recovery_times_1",
+                    total:true,
+                },
+                {
+                    headerName:"1日付款金额",
+                    hide: true,
+                    field:"recovery_recharge_1",
+                    total:true,
+                },
+                {
+                    headerName:"2日付款人数",
+                    hide: true,
+                    field:"recovery_users_2",
+                    total:true,
+                },
+                {
+                    headerName:"2日付款次数",
+                    hide: true,
+                    field:"recovery_times_2",
+                    total:true,
+                },
+                {
+                    headerName:"2日付款金额",
+                    hide: true,
+                    field:"recovery_recharge_2",
+                    total:true,
+                },
+                {
+                    headerName:"3日付款人数",
+                    hide: true,
+                    field:"recovery_users_3",
+                    total:true,
+                },
+                {
+                    headerName:"3日付款次数",
+                    hide: true,
+                    field:"recovery_times_3",
+                    total:true,
+                },
+                {
+                    headerName:"3日付款金额",
+                    hide: true,
+                    field:"recovery_recharge_3",
+                    total:true,
+                },
+                {
+                    headerName:"4日付款人数",
+                    hide: true,
+                    field:"recovery_users_4",
+                    total:true,
+                },
+                {
+                    headerName:"4日付款次数",
+                    hide: true,
+                    field:"recovery_times_4",
+                    total:true,
+                },
+                {
+                    headerName:"4日付款金额",
+                    hide: true,
+                    field:"recovery_recharge_4",
+                    total:true,
+                },
+                {
+                    headerName:"5日付款人数",
+                    hide: true,
+                    field:"recovery_users_5",
+                    total:true,
+                },
+                {
+                    headerName:"5日付款次数",
+                    hide: true,
+                    field:"recovery_times_5",
+                    total:true,
+                },
+                {
+                    headerName:"5日付款金额",
+                    hide: true,
+                    field:"recovery_recharge_5",
+                    total:true,
+                },
+                {
+                    headerName:"6日付款人数",
+                    hide: true,
+                    field:"recovery_users_6",
+                    total:true,
+                },
+                {
+                    headerName:"6日付款次数",
+                    hide: true,
+                    field:"recovery_times_6",
+                    total:true,
+                },
+                {
+                    headerName:"6日付款金额",
+                    hide: true,
+                    field:"recovery_recharge_6",
+                    total:true,
+                },
+                {
+                    headerName:"7日付款人数",
+                    hide: true,
+                    field:"recovery_users_7",
+                    total:true,
+                },
+                {
+                    headerName:"7日付款次数",
+                    hide: true,
+                    field:"recovery_times_7",
+                    total:true,
+                },
+                {
+                    headerName:"7日付款金额",
+                    hide: true,
+                    field:"recovery_recharge_7",
+                    total:true,
+                }
+            ]
+        }
       ],
     };
   }
@@ -309,8 +532,9 @@ class LayoutDemo extends PureComponent {
 
   tableReload = values => {
     const { dispatch } = this.props;
+    
     dispatch({
-      type: 'system/fetchRoleList',
+      type: 'project/fetchDemoList',
       callback: response => {
         if (!response.code) {
           this.setState({
@@ -319,7 +543,6 @@ class LayoutDemo extends PureComponent {
         }
       },
     });
-    console.log(values);
   };
 
   saveFormRef = formRef => {
@@ -332,30 +555,30 @@ class LayoutDemo extends PureComponent {
   render() {
     const {
       route: { authorized },
+      loading,
     } = this.props;
     return (
-      <PageHeaderWrapper title={this.state.pageName}>
-        <Card bordered={false}>
-          <div className={styles.tableList}>
+      <PageHeaderWrapper>
+        <Card bordered={false} bodyStyle={{paddingBottom:0}}>
             <SearchForm
               tableReload={this.tableReload}
               wrappedComponentRef={this.saveSearchFormRef}
-            />
-            <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.handleAdd()}>
-                新建
-              </Button>
-            </div>
+            />        
+        </Card>
+        <Card bordered={false}>
             <JTable
               fileName={this.state.pageName}
-              columnDefs={this.state.columnDefs}
+              loading={loading}
+              columnCus={this.state.columnCus}
               rowData={this.state.tableList}
               context={this}
-              frameworkComponents={this.state.frameworkComponents}
+              totalNextTick={(data,callback)=>{
+                // data.roi=1
+                callback(data)
+              }}
+              gridComponents={this.state.gridComponents}
             />
-          </div>
         </Card>
-        <FormLayout wrappedComponentRef={this.saveFormRef} pageName={this.state.pageName} />
       </PageHeaderWrapper>
     );
   }

@@ -51,7 +51,6 @@ export default class TopMenu extends PureComponent {
     if (noChil.length) {
       arr.push([...noChil, ...hasChil.splice(0, 1)]);
     }
-
     //有节点的按两个分割一组
     arr.push(...chunk(hasChil, 2));
     let height = [];
@@ -91,7 +90,11 @@ export default class TopMenu extends PureComponent {
     if (item.children && !item.hideChildrenInMenu && item.children.some(child => child.name)) {
       switch (level) {
         case 1:
-          item.children.sort(chil => (chil.children ? 0 : -1));
+          item.children.sort((a, b) => {
+            const d1 = a.children ? 1 : 0;
+            const d2 = b.children ? 1 : 0;
+            return d1 - d2;
+          });
           node = (
             <li
               key={item.path + '_1'}

@@ -2,7 +2,7 @@ import moment from 'moment';
 import React from 'react';
 import nzh from 'nzh/cn';
 import { parse, stringify } from 'qs';
-
+import {sumBy} from 'lodash'
 export function typeOf(obj) {
   const toString = Object.prototype.toString;
   const map = {
@@ -216,6 +216,28 @@ export function formatWan(val) {
     );
   }
   return result;
+}
+
+function loopColunm(columns){
+  let col=[]
+  columns.map((item)=>{
+    if(item.children){
+      col.push(...loopColunm(item.children))
+    }else{
+      col.push(item)
+    }
+  })
+  return col
+}
+export function totalHandle(data,columns){
+  const col=loopColunm(columns)
+  let total={}
+  col.forEach(row=>{
+    if(row.total){
+      total[row.field]=sumBy(data,row.field)
+    }
+  })
+  return total
 }
 
 // 给官方演示站点用，用于关闭真实开发环境不需要使用的特性

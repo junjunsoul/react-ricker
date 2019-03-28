@@ -62,4 +62,17 @@ export default {
       },
     ],
   },
+  CaptchaImg: {
+    props: {
+      size: 'large',
+      prefix: <Icon type="safety-certificate" className={styles.prefixIcon} />,
+      placeholder: 'captchaImg',
+    },
+    rules: [
+      {
+        required: true,
+        message: 'Please enter Captcha!',
+      },
+    ],
+  },
 };

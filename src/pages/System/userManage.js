@@ -12,16 +12,16 @@ import {
   Icon,
   Input,
   Radio,
+  Select,
   message,
 } from 'antd';
 import styles from './index.less';
 
 import JTable from '@/components/JTable';
-import AuthTree from './AuthTree';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import { getAllAuthforPaths, getFM } from '@/authorize/functionModule';
 const FormItem = Form.Item;
-const { TextArea } = Input;
+const Option = Select.Option;
+
 @connect(({ loading }) => ({
   loading: loading.models.role,
 }))
@@ -34,19 +34,19 @@ class FormLayout extends PureComponent {
       formValues: {},
       formRow: {},
       formState: 'add',
+      roleList: [],
     };
   }
   add = () => {
+    this.getRoleList();
     this.setState({
       modalVisible: true,
       formState: 'add',
       formValues: {},
     });
-    setTimeout(() => {
-      this.treeR.setValue([]);
-    }, 500);
   };
   edit = values => {
+    this.getRoleList();
     this.setState({
       modalVisible: true,
       formState: 'update',
@@ -55,10 +55,19 @@ class FormLayout extends PureComponent {
         ...values,
       },
     });
-
-    setTimeout(() => {
-      this.treeR.setValue(getAllAuthforPaths(values.routes));
-    }, 500);
+  };
+  getRoleList = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'role/fetchRoleList',
+      callback: response => {
+        if (!response.code) {
+          this.setState({
+            roleList: response.data,
+          });
+        }
+      },
+    });
   };
   successHandle = () => {
     const { form, tableReloader } = this.props;
@@ -72,13 +81,11 @@ class FormLayout extends PureComponent {
     const { formState, formRow } = this.state;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
-      let auth = [];
-      this.treeR.getValue().map(val => auth.push(...getFM(val)));
-      let result = { ...fieldsValue, routes: auth };
+      let result = { ...fieldsValue };
       if (formState == 'update') {
-        result.role_id = formRow.role_id;
+        result.user_id = formRow.user_id;
         dispatch({
-          type: 'role/updateRole',
+          type: 'userManage/updateUser',
           payload: {
             ...result,
           },
@@ -90,7 +97,7 @@ class FormLayout extends PureComponent {
         });
       } else {
         dispatch({
-          type: 'role/addRole',
+          type: 'userManage/addUser',
           payload: {
             ...result,
           },
@@ -108,12 +115,10 @@ class FormLayout extends PureComponent {
       modalVisible: false,
     });
   };
-  treeRef = ref => {
-    this.treeR = ref;
-  };
+
   render() {
     const { form, loading } = this.props;
-    const { formState } = this.state;
+    const { formState, roleList } = this.state;
     const dist = {
       add: '添加',
       update: '更新',
@@ -121,8 +126,8 @@ class FormLayout extends PureComponent {
     return (
       <Modal
         destroyOnClose
-        title={`${dist[formState]}角色信息`}
-        width={800}
+        title={`${dist[formState]}账号信息`}
+        width={600}
         size="small"
         visible={this.state.modalVisible}
         onCancel={this.onCancel}
@@ -135,47 +140,76 @@ class FormLayout extends PureComponent {
           </Button>,
         ]}
       >
-        <Row gutter={12}>
-          <Col span={12}>
-            <div className={styles.formLayout}>
-              <FormItem label="角色名称">
-                {form.getFieldDecorator('name', {
-                  initialValue: this.state.formValues.name,
+        <div className={styles.formLayout}>
+          <Row gutter={12}>
+            <Col span={12}>
+              <FormItem label="账号">
+                {form.getFieldDecorator('username', {
+                  initialValue: this.state.formValues.username,
                   rules: [{ required: true, message: '必填项！' }],
                 })(<Input placeholder="请输入" />)}
               </FormItem>
-              <FormItem label="排序">
-                {form.getFieldDecorator('ordid', {
-                  initialValue: this.state.formValues.ordid,
+            </Col>
+            <Col span={12}>
+              <FormItem label="真实姓名">
+                {form.getFieldDecorator('realname', {
+                  initialValue: this.state.formValues.realname,
                   rules: [{ required: true, message: '必填项！' }],
                 })(<Input placeholder="请输入" />)}
               </FormItem>
-              <FormItem label="描述">
-                {form.getFieldDecorator('description', {
-                  initialValue: this.state.formValues.description,
-                })(<TextArea rows={4} placeholder="请输入" />)}
+            </Col>
+          </Row>
+          <Row gutter={12}>
+            <Col span={12}>
+              <FormItem label="新密码">
+                {form.getFieldDecorator('password', {
+                  initialValue: this.state.formValues.password,
+                  rules: [{ required: formState == 'add', message: '必填项！' }],
+                })(<Input placeholder="请输入" />)}
               </FormItem>
-              <FormItem label="是否启用">
-                {form.getFieldDecorator('status', {
-                  initialValue: this.state.formValues.status || 1,
-                })(
-                  <Radio.Group>
-                    <Radio value={1}>启用</Radio>
-                    <Radio value={0}>停用</Radio>
-                  </Radio.Group>
-                )}
-              </FormItem>          
-            </div>
-          </Col>
-          <Col span={12}>
-            <Card
-              style={{ width: '100%', height: '470px', overflowY: 'auto' }}
-              bodyStyle={{ padding: 10 }}
-            >
-              <AuthTree ref={this.treeRef} />
-            </Card>
-          </Col>
-        </Row>
+            </Col>
+            <Col span={12}>
+              <FormItem label="确认密码">
+                {form.getFieldDecorator('re_password', {
+                  initialValue: this.state.formValues.re_password,
+                  rules: [{ required: formState == 'add', message: '必填项！' }],
+                })(<Input placeholder="请输入" />)}
+              </FormItem>
+            </Col>
+          </Row>
+          <FormItem label="邮箱">
+            {form.getFieldDecorator('email', {
+              initialValue: this.state.formValues.email,
+              rules: [{ required: true, message: '必填项！' }],
+            })(<Input placeholder="请输入" />)}
+          </FormItem>
+
+          <FormItem label="所属角色">
+            {form.getFieldDecorator('roles', {
+              initialValue: (this.state.formValues.roles || []).map(val => val + ''),
+              rules: [{ required: true, message: '必填项！' }],
+            })(
+              <Select mode="tags" style={{ width: '100%' }} placeholder="请选择">
+                {roleList.map(item => (
+                  <Option key={item.role_id + ''} value={item.role_id + ''}>
+                    {item.name}
+                  </Option>
+                ))}
+              </Select>
+            )}
+          </FormItem>
+
+          <FormItem label="是否启用">
+            {form.getFieldDecorator('status', {
+              initialValue: this.state.formValues.status || 1,
+            })(
+              <Radio.Group>
+                <Radio value={1}>启用</Radio>
+                <Radio value={0}>停用</Radio>
+              </Radio.Group>
+            )}
+          </FormItem>      
+        </div>
       </Modal>
     );
   }
@@ -212,15 +246,17 @@ const actionRenderer = props => {
     </Fragment>
   );
 };
+
 @connect(({ loading }) => ({
-  loading: loading.effects['role/fetchRoleList'],
+  loading: loading.effects['userManage/fetchUserList'],
 }))
-class Role extends PureComponent {
+class UserMange extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      name: '角色设置',
+      name: '账号管理',
       tableList: [],
+      columnCus:[],
       status: '',
       gridComponents: {
         actionRenderer,
@@ -230,7 +266,7 @@ class Role extends PureComponent {
   tableReloader = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'role/fetchRoleList',
+      type: 'userManage/fetchUserList',
       payload: {
         status: this.state.status,
       },
@@ -249,9 +285,9 @@ class Role extends PureComponent {
   handleUpdate = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'role/fetchRoleInfo',
+      type: 'userManage/fetchUserInfo',
       payload: {
-        role_id: fields.role_id,
+        user_id: fields.user_id,
       },
       callback: response => {
         if (!response.code) {
@@ -264,9 +300,9 @@ class Role extends PureComponent {
   handleDelete = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'role/deleteRole',
+      type: 'userManage/deleteUser',
       payload: {
-        role_id: fields.role_id,
+        user_id: fields.user_id,
       },
       callback: response => {
         if (!response.code) {
@@ -277,6 +313,41 @@ class Role extends PureComponent {
     });
   };
 
+  componentDidMount() {
+    const {
+      route: { authorized },
+    } = this.props;
+    const columnCus = [
+      { headerName: 'ID', field: 'user_id', width: 80 },
+      { headerName: '账号', field: 'username', width: 100 },
+      { headerName: '真实姓名', field: 'realname', width: 100 },
+      { headerName: '所属角色', field: 'roles' },
+      { headerName: '最后登录时间', field: 'update_time' },
+      { headerName: '最后登录IP', field: 'ip', width: 100 },
+      { headerName: '登录次数', field: 'login_count', width: 100 },
+      {
+        headerName: '状态',
+        field: 'status',
+        cellRenderer: params => (params.value === 1 ? '启用' : '停用'),
+      },
+    ];
+    if (authorized.update || authorized.delete) {
+      columnCus.push({
+        headerName: '',
+        field: 'action',
+        sortable: false,
+        width: 100,
+        pinned: 'right',
+        suppressMenu: true,
+        cellStyle: { textAlign: 'center' },
+        cellRenderer: 'actionRenderer',
+      });
+    }
+    this.setState({
+      columnCus,
+    });
+    this.tableReloader();
+  }
   statusChange = e => {
     this.setState({
       status: e.target.value,
@@ -310,46 +381,6 @@ class Role extends PureComponent {
       </Row>
     );
   };
-  componentDidMount() {
-    const {
-      route: { authorized },
-    } = this.props;
-    const columnCus = [
-      { headerName: 'ID', field: 'role_id', width: 80 },
-      { headerName: '角色名称', field: 'name', width: 100 },
-      { headerName: '角色描述', field: 'description' },
-      { headerName: '角色用户数', field: 'users_count', width: 100 },
-      {
-        headerName: '状态',
-        field: 'status',
-        width: 100,
-        cellRenderer: params => (params.value === 1 ? '启用' : '停用'),
-      },
-      { headerName: '排序', width: 100, field: 'ordid' },
-      {
-        headerName: '状态',
-        field: 'status',
-        width: 100,
-        cellRenderer: params => (params.value === 1 ? '启用' : '停用'),
-      },
-    ];
-    if (authorized.update || authorized.delete) {
-      columnCus.push({
-        headerName: '',
-        field: 'action',
-        sortable: false,
-        width: 100,
-        pinned: 'right',
-        suppressMenu: true,
-        cellStyle: { textAlign: 'center' },
-        cellRenderer: 'actionRenderer',
-      });
-    }
-    this.setState({
-      columnCus,
-    });
-    this.tableReloader();
-  }
   saveFormRef = formRef => {
     this.formRef = formRef;
   };
@@ -377,4 +408,4 @@ class Role extends PureComponent {
     );
   }
 }
-export default Role;
+export default UserMange;

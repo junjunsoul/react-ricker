@@ -1,11 +1,11 @@
 import { getRouterAuthority } from './authority';
-
-export default function Authorized({ pathname, routes, authMenus, children, noMatch }) {
+import { checkAuth, getFMFuzzy } from '@/authorize/functionModule';
+export default function Authorized({ pathname, routes, authority, children, noMatch }) {
+  const available = checkAuth(pathname, authority);
   let route = getRouterAuthority(pathname, routes, 'routes');
-  let auth = getRouterAuthority(pathname, authMenus, 'children');
-  if (route && auth) {
-    route.authorized = Object.assign({}, auth.authChip);
-    return auth.available ? children : noMatch;
+  if (route && available) {
+    route.authorized = Object.assign({}, getFMFuzzy(pathname, authority));
+    return children;
   } else {
     return noMatch;
   }

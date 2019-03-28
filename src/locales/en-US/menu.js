@@ -39,5 +39,8 @@ export default {
   'menu.system': 'system',
   'menu.system.role': 'role',
   'menu.system.interfacelist': 'interface',
+  'menu.system.interfacereport': 'interface report',
+  'menu.system.usermanage': 'user Manage',
+  'menu.system.accesslog': 'access log',
   'menu.system.layoutdemo': 'layoutdemo',
 };

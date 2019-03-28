@@ -4,10 +4,9 @@ export default {
   namespace: 'global',
 
   state: {
-    collapsed: false,
     isMobile: false,
     notices: [],
-    allRoute: [],
+    documentTitle: 'Ant Design Pro',
   },
 
   effects: {
@@ -70,12 +69,6 @@ export default {
   },
 
   reducers: {
-    changeLayoutCollapsed(state, { payload }) {
-      return {
-        ...state,
-        collapsed: payload,
-      };
-    },
     changeMedia(state, { payload }) {
       return {
         ...state,
@@ -86,12 +79,6 @@ export default {
       return {
         ...state,
         notices: payload,
-      };
-    },
-    saveAllRoute(state, { payload }) {
-      return {
-        ...state,
-        allRoute: deepCopy(payload),
       };
     },
     saveClearedNotices(state, { payload }) {

@@ -5,7 +5,7 @@ export const queryProjectNotice = {
   title: '进行中的项目',
   url: '/api/project/notice',
   req: async () => {
-    return request('/api/project/notice');
+    return request(queryProjectNotice.url);
   },
 };
 
@@ -13,7 +13,7 @@ export const queryActivities = {
   title: '活动消息',
   url: '/api/activities',
   req: async () => {
-    return request('/api/activities');
+    return request(queryActivities.url);
   },
 };
 
@@ -21,7 +21,7 @@ export const queryRule = {
   title: '查询规则配置',
   url: '/api/rule',
   req: async params => {
-    return request(`/api/rule?${stringify(params)}`);
+    return request(`${queryRule.url}?${stringify(params)}`);
   },
 };
 
@@ -29,7 +29,7 @@ export const removeRule = {
   title: '删除规则配置',
   url: '/api/rule',
   req: async params => {
-    return request('/api/rule', {
+    return request(removeRule.url, {
       method: 'POST',
       body: {
         ...params,
@@ -43,7 +43,7 @@ export const addRule = {
   title: '新增规则配置',
   url: '/api/rule',
   req: async params => {
-    return request('/api/rule', {
+    return request(addRule.url, {
       method: 'POST',
       body: {
         ...params,
@@ -57,7 +57,7 @@ export const updateRule = {
   title: '更新规则配置',
   url: '/api/rule',
   req: async params => {
-    return request('/api/rule', {
+    return request(updateRule.url, {
       method: 'POST',
       body: {
         ...params,
@@ -71,7 +71,7 @@ export const fakeSubmitForm = {
   title: '基础表单提交',
   url: '/api/forms',
   req: async params => {
-    return request('/api/forms', {
+    return request(fakeSubmitForm.url, {
       method: 'POST',
       body: params,
     });
@@ -82,7 +82,7 @@ export const fakeChartData = {
   title: '拉取报表数据',
   url: '/api/fake_chart_data',
   req: async () => {
-    return request('/api/fake_chart_data');
+    return request(fakeChartData.url);
   },
 };
 
@@ -90,7 +90,7 @@ export const queryTags = {
   title: '热门搜索标签',
   url: '/api/tags',
   req: async () => {
-    return request('/api/tags');
+    return request(queryTags.url);
   },
 };
 
@@ -98,7 +98,7 @@ export const queryBasicProfile = {
   title: '退货商品',
   url: '/api/profile/basic',
   req: async () => {
-    return request('/api/profile/basic');
+    return request(queryBasicProfile.url);
   },
 };
 
@@ -106,7 +106,7 @@ export const queryAdvancedProfile = {
   title: '退货进度',
   url: '/api/profile/advanced',
   req: async () => {
-    return request('/api/profile/advanced');
+    return request(queryAdvancedProfile.url);
   },
 };
 
@@ -114,7 +114,7 @@ export const queryFakeList = {
   title: '任务列表',
   url: '/api/fake_list',
   req: async params => {
-    return request(`/api/fake_list?${stringify(params)}`);
+    return request(`${queryFakeList.url}?${stringify(params)}`);
   },
 };
 
@@ -123,7 +123,7 @@ export const removeFakeList = {
   url: '/api/fake_list',
   req: async params => {
     const { count = 5, ...restParams } = params;
-    return request(`/api/fake_list?count=${count}`, {
+    return request(`${removeFakeList.url}?count=${count}`, {
       method: 'POST',
       body: {
         ...restParams,
@@ -138,7 +138,7 @@ export const addFakeList = {
   url: '/api/fake_list',
   req: async params => {
     const { count = 5, ...restParams } = params;
-    return request(`/api/fake_list?count=${count}`, {
+    return request(`${addFakeList.url}?count=${count}`, {
       method: 'POST',
       body: {
         ...restParams,
@@ -153,7 +153,7 @@ export const updateFakeList = {
   url: '/api/fake_list',
   req: async params => {
     const { count = 5, ...restParams } = params;
-    return request(`/api/fake_list?count=${count}`, {
+    return request(`${updateFakeList.url}?count=${count}`, {
       method: 'POST',
       body: {
         ...restParams,
@@ -162,45 +162,21 @@ export const updateFakeList = {
     });
   },
 };
-
-export const fakeAccountLogin = {
-  title: '登陆',
-  url: '/api/login/account',
-  inborn: true,
-  req: params => {
-    return request('/api/login/account', {
+export const getDemoList = {
+  title: '用例demo',
+  url: '/api/demo_list',
+  req: async params => {
+    return request(getDemoList.url, {
       method: 'POST',
       body: params,
     });
   },
-};
-
-export const fakeRegister = {
-  title: '注册',
-  url: '/api/register',
-  inborn: true,
-  req: params => {
-    return request('/api/register', {
-      method: 'POST',
-      body: params,
-    });
-  },
-};
-
+}
 export const queryNotices = {
   title: '通知',
   url: '/api/notices',
   inborn: true,
   req: () => {
-    return request('/api/notices');
-  },
-};
-
-export const getFakeCaptcha = {
-  title: '手机验证登录',
-  url: '/api/captcha',
-  inborn: true,
-  req: mobile => {
-    return request(`/api/captcha?mobile=${mobile}`);
+    return request(queryNotices.url);
   },
 };
